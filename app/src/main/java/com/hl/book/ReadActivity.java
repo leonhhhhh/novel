@@ -87,7 +87,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         }
         isLoading = true;
         final String fullUrl = BookResourceBaseUrl.biquge.ChapterUrl +url;
-                Observable.create(new ObservableOnSubscribe<Object>() {
+        Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) {
                 Connection connect = Jsoup.connect(fullUrl);

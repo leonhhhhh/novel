@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp" android:orientation="horizontal"
+    android:background="@drawable/rv_selector_background">
+    <ImageView android:id="@+id/ivCover"
+        android:layout_width="44dp" android:scaleType="centerCrop"
+        android:layout_height="59dp" android:layout_marginEnd="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent" android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent" android:orientation="horizontal"
+            android:layout_height="wrap_content" android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="万千之心"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+            <TextView android:id="@+id/tvAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"  android:focusable="true"
+                android:text="@string/add_book" android:clickable="true"
+                android:layout_alignParentEnd="true" android:onClick="onAddListener"
+                style="@android:style/Widget.Button.Small"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent" android:orientation="horizontal"
+            android:layout_height="wrap_content" android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/tvAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="作者"
+                />
+            <TextView
+                android:id="@+id/tvNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="最新章节:"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="简介简介简介简介简介简介简介简介简介"
+            android:layout_alignParentEnd="true"/>
+    </LinearLayout>
+</LinearLayout>

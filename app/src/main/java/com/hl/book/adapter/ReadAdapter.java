@@ -74,7 +74,6 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
                 }
             }
         });
-
     }
     @Override
     public int getItemCount() {

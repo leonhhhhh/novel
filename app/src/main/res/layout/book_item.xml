@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".BookListActivity"
-    android:padding="10dp">
-
+    android:padding="10dp"
+    android:background="@drawable/rv_selector_background">
     <ImageView android:id="@+id/ivCover"
         android:layout_width="44dp" android:scaleType="centerCrop"
         android:layout_height="59dp" android:layout_marginRight="10dp"/>
@@ -20,18 +20,8 @@
         android:id="@+id/tvNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="最新章节:" android:clickable="true" android:focusable="true"
-        android:onClick="onGoNewListener"
+        tools:text="最新章节:"
         android:layout_toEndOf="@+id/ivCover"
         android:layout_alignBottom="@+id/ivCover"
         />
-    <TextView
-        android:id="@+id/tvLast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="继续阅读:" android:clickable="true" android:focusable="true"
-        android:onClick="onGoLastListener"
-        android:padding="7dp" android:background="#FFCCCC"
-        android:layout_alignParentRight="true"/>
-
 </RelativeLayout>

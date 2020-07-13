@@ -11,45 +11,62 @@ import android.widget.TextView;
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.model.Book;
+import com.hl.book.model.SearchBook;
 import com.hl.book.util.image.ImageLoadUtil;
 import com.hl.book.util.image.ImageOptionsFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder>{
-    private ArrayList<Book> chapterList;
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder>{
+    private ArrayList<SearchBook> chapterList;
     private OnItemClickListener onItemClickListener;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
         TextView tvName;
         TextView tvNew;
+        TextView tvAuthor;
+        TextView tvDesc;
+        TextView tvAdd;
         MyViewHolder(View v) {
             super(v);
             ivCover = v.findViewById(R.id.ivCover);
             tvName = v.findViewById(R.id.tvName);
             tvNew = v.findViewById(R.id.tvNew);
+            tvAuthor = v.findViewById(R.id.tvAuthor);
+            tvDesc = v.findViewById(R.id.tvDesc);
+            tvAdd = v.findViewById(R.id.tvAdd);
         }
     }
-    public BookListAdapter(ArrayList<Book> chapterList, OnItemClickListener onItemClickListener) {
+    public SearchAdapter(ArrayList<SearchBook> chapterList, OnItemClickListener onItemClickListener) {
         this.chapterList = chapterList;
         this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
-    public BookListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                           int viewType) {
+    public SearchAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                         int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.book_item, parent, false);
+                .inflate(R.layout.search_item, parent, false);
         return new MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final BookListAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final SearchAdapter.MyViewHolder holder, int position) {
+        SearchBook searchBook = chapterList.get(position);
         ImageLoadUtil.loadImg(ImageOptionsFactory.getDefaultOption(holder.ivCover.getContext(),
-                chapterList.get(position).cover,holder.ivCover));
-        holder.tvName.setText(chapterList.get(position).name);
-        holder.tvNew.setText(chapterList.get(position).newChapter);
+                searchBook.cover,holder.ivCover));
+        holder.tvName.setText(searchBook.name);
+        holder.tvNew.setText(MessageFormat.format("最新:{0}", searchBook.newChapter));
+        holder.tvDesc.setText(searchBook.desc);
+        holder.tvAuthor.setText(MessageFormat.format("作者:{0}", searchBook.author));
+        holder.tvAdd.setTag(position);
+        if (searchBook.hasAdd){
+            holder.tvAdd.setText("移除书架");
+        }else {
+            holder.tvAdd.setText("加入书架");
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

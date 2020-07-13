@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">book</string>
+    <string name="more">more</string>
+    <string name="search">搜索</string>
+    <string name="add_book">加入书架</string>
 </resources>
