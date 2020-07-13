@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ReadActivity" />
+        <activity android:name=".ReadActivity" android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ChapterListActivity" />
     </application>
 

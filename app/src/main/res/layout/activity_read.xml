@@ -43,5 +43,22 @@
                 android:onClick="onFontSizeDownListener"
                 android:text="字体小" style="@style/Base.Widget.AppCompat.Button"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content" android:orientation="horizontal"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true" android:focusable="true"
+                android:onClick="onDayListener"
+                android:text="白天" style="@style/Base.Widget.AppCompat.Button"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true" android:focusable="true"
+                android:onClick="onNightListener"
+                android:text="晚上" style="@style/Base.Widget.AppCompat.Button"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

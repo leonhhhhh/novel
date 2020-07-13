@@ -1,6 +1,7 @@
 package com.hl.book;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -177,5 +178,15 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         AppSharedper.getInstance(this).putInt("fontSize",fontSize);
         tvFontSize.setText(fontSize+"");
         adapter.setTextSize(fontSize);
+    }
+
+    public void onDayListener(View view) {
+        adapter.setNight(false);
+        recyclerView.setBackgroundColor(Color.WHITE);
+    }
+
+    public void onNightListener(View view) {
+        adapter.setNight(true);
+        recyclerView.setBackgroundColor(Color.BLACK);
     }
 }
