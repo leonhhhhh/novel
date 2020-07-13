@@ -1,9 +1,12 @@
 package com.hl.book;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,7 +37,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/9 倒序正序做一个按钮
 public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
@@ -122,6 +124,24 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_book_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionMore:
+                Collections.reverse(data);
+                adapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
     @Override
     public void onItemClick(View view, int position) {

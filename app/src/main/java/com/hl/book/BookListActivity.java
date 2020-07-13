@@ -39,7 +39,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/13 增加书籍搜索功能
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener {
     private ArrayList<Book> data;
     private RecyclerView.Adapter adapter;
