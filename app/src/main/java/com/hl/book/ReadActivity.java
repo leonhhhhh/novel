@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +44,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
     private RecyclerView recyclerView;
     private Chapter chapter;
     private TextView tvFontSize;
+    private View llyBottom;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         setTitle(chapter.title);
 
         recyclerView = findViewById(R.id.recyclerView);
+        llyBottom = findViewById(R.id.llyBottom);
         tvFontSize = findViewById(R.id.tvFontSize);
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
@@ -166,6 +170,27 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         }else {
             findViewById(R.id.llyBottom).setVisibility(View.GONE);
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_book_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionMore:
+                if (llyBottom.getVisibility() != View.VISIBLE){
+                    llyBottom.setVisibility(View.VISIBLE);
+                }else {
+                    llyBottom.setVisibility(View.GONE);
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     public void onFontSizeUpListener(View view) {
