@@ -32,4 +32,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.code.gson:gson-parent:2.8.5'
+    implementation 'com.orhanobut:logger:2.2.0'
+
 }

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +17,7 @@ import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.model.Chapter;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -57,7 +58,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         recyclerView = findViewById(R.id.recyclerView);
         tvFontSize = findViewById(R.id.tvFontSize);
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
-        tvFontSize.setText(fontSize+"");
+        tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         iniListener();
         data = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
@@ -75,14 +76,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (recyclerView.computeVerticalScrollRange()-recyclerView.computeVerticalScrollOffset()<
-                        recyclerView.computeVerticalScrollExtent()*5) {
-                    System.out.println("缓存下一页!!!!");
-                    Chapter last = data.get(data.size()-1);
-                    startGetContent(last.url);
-                    AppSharedper.getInstance(ReadActivity.this).putString(chapter.title,
-                            last.title);
-                }
+                getNextChapter();
             }
         });
     }
@@ -149,7 +143,17 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         }
         isLoading = false;
     }
-
+    private void getNextChapter() {
+        if (recyclerView.computeVerticalScrollRange()-recyclerView.computeVerticalScrollOffset()>
+                recyclerView.computeVerticalScrollExtent()*5) {
+            return;
+        }
+        Logger.i("缓存下一页!!!!");
+        Chapter last = data.get(data.size()-1);
+        startGetContent(last.url);
+        AppSharedper.getInstance(ReadActivity.this).putString(chapter.title,
+                last.title);
+    }
     @Override
     public void onItemClick(View view, int position) {
         recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
@@ -168,7 +172,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
         fontSize++;
         AppSharedper.getInstance(this).putInt("fontSize",fontSize);
-        tvFontSize.setText(fontSize+"");
+        tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         adapter.setTextSize(fontSize);
     }
 
@@ -176,7 +180,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
         fontSize--;
         AppSharedper.getInstance(this).putInt("fontSize",fontSize);
-        tvFontSize.setText(fontSize+"");
+        tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         adapter.setTextSize(fontSize);
     }
 

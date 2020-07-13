@@ -1,6 +1,5 @@
 package com.hl.book;
 
-import android.app.Application;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,12 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.hl.book.adapter.BookListAdapter;
-import com.hl.book.base.BookResourceBaseUrl;
-import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
@@ -21,22 +16,8 @@ import com.hl.book.model.Book;
 import com.hl.book.util.ActivitySkipUtil;
 import com.hl.book.util.net.JsonUtil;
 
-import org.json.JSONArray;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener {
     private final String TAG = "BookListActivity";
