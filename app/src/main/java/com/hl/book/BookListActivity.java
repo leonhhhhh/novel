@@ -39,6 +39,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+// TODO: 2020/7/14 书籍列表项增加更多按钮 点击弹底部窗口
+// TODO: 2020/7/14 底部窗口包括:书籍简略显示  书籍详情界面跳转按钮 删除  
+// TODO: 2020/7/14 下拉刷新功能 
+// TODO: 2020/7/14 更新未读红点提示 
+// TODO: 2020/7/14 更新时间显示
+// TODO: 2020/7/14 增加数据库支持
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener {
     private ArrayList<Book> data;
     private RecyclerView.Adapter adapter;

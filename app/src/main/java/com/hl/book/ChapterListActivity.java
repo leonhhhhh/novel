@@ -37,6 +37,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+// TODO: 2020/7/14 书籍详情界面: 把章节列表界面转为书籍详情界面
+// TODO: 2020/7/14 书籍详情介绍
+// TODO: 2020/7/14 书籍章节显示
+// TODO: 2020/7/14 上次阅读章节显示
+// TODO: 2020/7/14 继续阅读按钮
+// TODO: 2020/7/14 加入移除书架
+// TODO: 2020/7/14 缓存章节功能  删除缓存功能
 public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;

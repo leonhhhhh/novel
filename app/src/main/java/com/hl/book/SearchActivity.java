@@ -41,6 +41,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2020/7/13 搜索结果有多页的情况未处理
+// TODO: 2020/7/14  搜索结果与已加入的书籍进行匹配 初始化是否加入书架
 public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
     private ArrayList<SearchBook> data;
     private RecyclerView.Adapter adapter;
