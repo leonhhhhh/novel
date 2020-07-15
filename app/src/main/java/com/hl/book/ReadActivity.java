@@ -17,8 +17,10 @@ import com.hl.book.adapter.ReadAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
+import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.model.Chapter;
+import com.hl.book.view.ReadClickView;
 import com.orhanobut.logger.Logger;
 
 import org.jsoup.Connection;
@@ -38,13 +40,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ReadActivity extends AppCompatActivity implements OnItemClickListener {
+// TODO: 2020/7/15 上下滑动与分区域点击的实现
+public class ReadActivity extends AppCompatActivity implements OnItemClickListener ,ReadClickListener{
     private ReadAdapter adapter;
     private ArrayList<Chapter> data;
     private RecyclerView recyclerView;
     private Chapter chapter;
     private TextView tvFontSize;
     private View llyBottom;
+    private ReadClickView readClickView;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,8 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         assert chapter != null;
         setTitle(chapter.title);
 
+        readClickView = findViewById(R.id.readClickView);
+        readClickView.setClickListener(this);
         recyclerView = findViewById(R.id.recyclerView);
         llyBottom = findViewById(R.id.llyBottom);
         tvFontSize = findViewById(R.id.tvFontSize);
@@ -161,6 +167,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onItemClick(View view, int position) {
         recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
+        getNextChapter();
     }
 
     public void onSettingListener(View view) {
@@ -217,5 +224,30 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
     public void onNightListener(View view) {
         adapter.setNight(true);
         recyclerView.setBackgroundColor(Color.BLACK);
+    }
+
+    @Override
+    public void onTopLeftClick(View view) {
+
+    }
+
+    @Override
+    public void onTopRightClick(View view) {
+
+    }
+
+    @Override
+    public void onCenterClick(View view) {
+
+    }
+
+    @Override
+    public void onBottomLeftClick(View view) {
+
+    }
+
+    @Override
+    public void onBottomRightClick(View view) {
+
     }
 }
