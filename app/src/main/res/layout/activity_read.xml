@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hl.book.view.ReadClickView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReadActivity" android:id="@+id/readClickView">
-
+    tools:context=".ReadActivity" >
+    <com.hl.book.view.ReadClickView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ReadActivity" android:id="@+id/readClickView">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </com.hl.book.view.ReadClickView>
     <LinearLayout android:id="@+id/llyBottom"
         android:layout_width="match_parent" android:orientation="vertical"
         android:layout_height="wrap_content" android:background="#bbbbbb"
@@ -57,4 +63,4 @@
                 android:text="晚上" style="@style/Base.Widget.AppCompat.Button"/>
         </LinearLayout>
     </LinearLayout>
-</com.hl.book.view.ReadClickView>
+</RelativeLayout>

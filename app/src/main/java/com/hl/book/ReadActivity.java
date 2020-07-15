@@ -40,8 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/15 上下滑动与分区域点击的实现
-public class ReadActivity extends AppCompatActivity implements OnItemClickListener ,ReadClickListener{
+public class ReadActivity extends AppCompatActivity implements ReadClickListener{
     private ReadAdapter adapter;
     private ArrayList<Chapter> data;
     private RecyclerView recyclerView;
@@ -76,7 +75,7 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new ReadAdapter(data,this);
+        adapter = new ReadAdapter(data);
         recyclerView.setAdapter(adapter);
         adapter.setTextSize(fontSize);
         startGetContent(chapter.url);
@@ -164,11 +163,6 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
         AppSharedper.getInstance(ReadActivity.this).putString(chapter.title,
                 last.title);
     }
-    @Override
-    public void onItemClick(View view, int position) {
-        recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
-        getNextChapter();
-    }
 
     public void onSettingListener(View view) {
         view.setSelected(!view.isSelected());
@@ -228,26 +222,29 @@ public class ReadActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onTopLeftClick(View view) {
-
+        recyclerView.scrollBy(0,- recyclerView.computeVerticalScrollExtent()*9/10);
     }
 
     @Override
     public void onTopRightClick(View view) {
-
+        recyclerView.scrollBy(0,- recyclerView.computeVerticalScrollExtent()*9/10);
     }
 
     @Override
     public void onCenterClick(View view) {
+        onSettingListener(view);
 
     }
 
     @Override
     public void onBottomLeftClick(View view) {
-
+        recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
+        getNextChapter();
     }
 
     @Override
     public void onBottomRightClick(View view) {
-
+        recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
+        getNextChapter();
     }
 }

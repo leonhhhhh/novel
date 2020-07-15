@@ -13,7 +13,7 @@ public class ReadClickView extends RelativeLayout {
     private float downY ;
     private boolean isClick = true;
     private ReadClickListener clickListener;
-
+    private boolean isClickAble = true;
     public ReadClickView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -42,8 +42,9 @@ public class ReadClickView extends RelativeLayout {
     }
     private void callClickListener(int downX,int downY){
         if (clickListener==null)return;
+        if (!isClickAble)return;
         int width = getWidth();
-        int height = getWidth();
+        int height = getHeight();
         if (downY<height/3){
             if (downX<width/2){
                 clickListener.onTopLeftClick(this);
@@ -62,5 +63,9 @@ public class ReadClickView extends RelativeLayout {
     }
     public void setClickListener(ReadClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setClickAble(boolean clickAble) {
+        isClickAble = clickAble;
     }
 }

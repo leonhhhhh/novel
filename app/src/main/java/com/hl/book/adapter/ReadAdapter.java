@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
     private ArrayList<Chapter> chapterList;
-    private OnItemClickListener onItemClickListener;
     private int  textSize=12;
     private boolean isNight = false;
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -30,9 +29,8 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
             tvContent = v.findViewById(R.id.tvContent);
         }
     }
-    public ReadAdapter(ArrayList<Chapter> chapterList, OnItemClickListener onItemClickListener) {
+    public ReadAdapter(ArrayList<Chapter> chapterList) {
         this.chapterList = chapterList;
-        this.onItemClickListener = onItemClickListener;
     }
 
     public void setTextSize(int textSize) {
@@ -66,14 +64,6 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
             holder.tvTitle.setTextColor(Color.BLACK);
         }
         holder.tvTitle.setText(chapterList.get(position).title);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener!=null){
-                    onItemClickListener.onItemClick(view,holder.getAdapterPosition());
-                }
-            }
-        });
     }
     @Override
     public int getItemCount() {
