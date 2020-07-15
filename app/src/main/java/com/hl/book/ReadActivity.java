@@ -47,7 +47,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     private Chapter chapter;
     private TextView tvFontSize;
     private View llyBottom;
-    private ReadClickView readClickView;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         assert chapter != null;
         setTitle(chapter.title);
 
-        readClickView = findViewById(R.id.readClickView);
+        ReadClickView readClickView = findViewById(R.id.readClickView);
         readClickView.setClickListener(this);
         recyclerView = findViewById(R.id.recyclerView);
         llyBottom = findViewById(R.id.llyBottom);
@@ -78,6 +78,12 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         adapter = new ReadAdapter(data);
         recyclerView.setAdapter(adapter);
         adapter.setTextSize(fontSize);
+        boolean isNight = AppSharedper.getInstance(this).getBoolean("isNight",false);
+        if (!isNight){
+            onDayListener(null);
+        }else {
+            onNightListener(null);
+        }
         startGetContent(chapter.url);
     }
     private void iniListener(){
@@ -213,11 +219,13 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     public void onDayListener(View view) {
         adapter.setNight(false);
         recyclerView.setBackgroundColor(Color.WHITE);
+        AppSharedper.getInstance(this).putBoolean("isNight",false);
     }
 
     public void onNightListener(View view) {
         adapter.setNight(true);
         recyclerView.setBackgroundColor(Color.BLACK);
+        AppSharedper.getInstance(this).putBoolean("isNight",true);
     }
 
     @Override
