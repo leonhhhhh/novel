@@ -14,6 +14,7 @@ import com.hl.book.model.Book;
 import com.hl.book.util.image.ImageLoadUtil;
 import com.hl.book.util.image.ImageOptionsFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder>{
@@ -48,10 +49,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.MyViewHolder holder, int position) {
+        Book book = chapterList.get(position);
         ImageLoadUtil.loadImg(ImageOptionsFactory.getDefaultOption(holder.ivCover.getContext(),
-                chapterList.get(position).cover,holder.ivCover));
-        holder.tvName.setText(chapterList.get(position).name);
-        holder.tvNew.setText(chapterList.get(position).newChapter);
+                book.cover,holder.ivCover));
+        holder.tvName.setText(book.name);
+        holder.tvNew.setText(MessageFormat.format("{0}:{1}", book.newShowTime, book.newChapter));
         holder.ivMore.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

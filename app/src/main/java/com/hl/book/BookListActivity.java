@@ -43,7 +43,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2020/7/14 下拉刷新功能
-// TODO: 2020/7/14 更新未读红点提示 
+// TODO: 2020/7/14 更新未读红点提示
 // TODO: 2020/7/14 更新时间显示
 // TODO: 2020/7/14 增加数据库支持
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener {
@@ -56,7 +56,6 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         Logger.addLogAdapter(new AndroidLogAdapter());
         setContentView(R.layout.activity_book_list);
         iniView();
-        startGetData();
     }
 
     private void iniView() {
@@ -73,6 +72,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     protected void onResume() {
         super.onResume();
         iniData();
+        startGetData();
         adapter.notifyDataSetChanged();
     }
 
@@ -172,6 +172,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
             book.cover = body.getElementById("fmimg").getElementsByTag("img").attr("src");
             Element info = document.body().getElementById("info");
             book.author = info.getElementsByTag("p").get(0).text().substring(2);
+            book.setNewTime(info.getElementsByTag("p").get(2).text().replace("最后更新：",""));
             book.newChapter = info.getElementsByTag("p").get(3).getElementsByTag("a").text();
         } catch (IOException e) {
             e.printStackTrace();

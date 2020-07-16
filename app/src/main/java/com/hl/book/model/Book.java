@@ -1,6 +1,12 @@
 package com.hl.book.model;
 
+import com.hl.book.util.DateUtil;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Book implements Serializable {
     public String name="";
@@ -10,6 +16,8 @@ public class Book implements Serializable {
     public String lastChapter="";
     public String lastChapterUrl="";
     public String newChapter="";
+    public String newTime="";
+    public String newShowTime="";
     public String desc="";
 
     public Book(){
@@ -18,6 +26,20 @@ public class Book implements Serializable {
     public Book(String name,String url){
         this.name = name;
         this.url = url;
+    }
+
+    public void setNewTime(String newTime) {
+        this.newTime = newTime;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
+        Date date = null;
+        try {
+            date = format.parse(newTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assert date != null;
+        newShowTime = DateUtil.format(date);
+
     }
 
 }
