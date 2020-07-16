@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -74,16 +75,16 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
             Book book = new Book("离天大圣", "37299/");
-            data.add(book);
-            book = new Book("万千之心", "43283/");
-            data.add(book);
+//            data.add(book);
+//            book = new Book("万千之心", "43283/");
+//            data.add(book);
             book = new Book("沧元图", "41037/");
-            data.add(book);
-            book = new Book("超神机械师", "29105/");
-            data.add(book);
-            book = new Book("峡谷正能量", "40918/");
-            data.add(book);
-            book = new Book("小阁老", "43022/");
+//            data.add(book);
+//            book = new Book("超神机械师", "29105/");
+//            data.add(book);
+//            book = new Book("峡谷正能量", "40918/");
+//            data.add(book);
+//            book = new Book("小阁老", "43022/");
             data.add(book);
             saveBooks(data);
             AppSharedper.getInstance(this).putBoolean(AppSharedperKeys.IsFirstIn, false);

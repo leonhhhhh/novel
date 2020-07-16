@@ -134,7 +134,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_book_list, menu);
+        getMenuInflater().inflate(R.menu.menu_chapter_list, menu);
         return true;
     }
 
