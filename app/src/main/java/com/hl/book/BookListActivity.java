@@ -42,9 +42,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/14 书籍列表项增加更多按钮 点击弹底部窗口
-// TODO: 2020/7/14 底部窗口包括:书籍简略显示  书籍详情界面跳转按钮 删除  
-// TODO: 2020/7/14 下拉刷新功能 
+// TODO: 2020/7/14 下拉刷新功能
 // TODO: 2020/7/14 更新未读红点提示 
 // TODO: 2020/7/14 更新时间显示
 // TODO: 2020/7/14 增加数据库支持
@@ -57,23 +55,28 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         super.onCreate(savedInstanceState);
         Logger.addLogAdapter(new AndroidLogAdapter());
         setContentView(R.layout.activity_book_list);
-        iniData();
         iniView();
         startGetData();
     }
 
     private void iniView() {
+        data = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new BookListAdapter(data, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        iniData();
         adapter.notifyDataSetChanged();
     }
 
     private void iniData() {
-        data = new ArrayList<>();
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
             Book book = new Book("离天大圣", "37299/");
@@ -93,8 +96,11 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         } else {
             String json = AppSharedper.getInstance(this).getString("books", "");
             Logger.i(json != null ? json : "");
-            data = JsonUtil.getGson().fromJson(json, new TypeToken<List<Book>>() {
+            data.clear();
+            ArrayList<Book> list = JsonUtil.getGson().fromJson(json, new TypeToken<List<Book>>() {
             }.getType());
+            assert list != null;
+            data.addAll(list);
         }
     }
 
