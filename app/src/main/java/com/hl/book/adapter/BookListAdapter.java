@@ -23,11 +23,13 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
         ImageView ivCover;
         TextView tvName;
         TextView tvNew;
+        ImageView ivMore;
         MyViewHolder(View v) {
             super(v);
             ivCover = v.findViewById(R.id.ivCover);
             tvName = v.findViewById(R.id.tvName);
             tvNew = v.findViewById(R.id.tvNew);
+            ivMore = v.findViewById(R.id.ivMore);
         }
     }
     public BookListAdapter(ArrayList<Book> chapterList, OnItemClickListener onItemClickListener) {
@@ -50,6 +52,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
                 chapterList.get(position).cover,holder.ivCover));
         holder.tvName.setText(chapterList.get(position).name);
         holder.tvNew.setText(chapterList.get(position).newChapter);
+        holder.ivMore.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

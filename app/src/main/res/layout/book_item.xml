@@ -24,4 +24,12 @@
         android:layout_toEndOf="@+id/ivCover"
         android:layout_alignBottom="@+id/ivCover"
         />
+    <ImageView
+        android:id="@+id/ivMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvName"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/svg_ic_more"
+        android:padding="10dp" android:onClick="onItemSettingListener"/>
 </RelativeLayout>

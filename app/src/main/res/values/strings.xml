@@ -4,4 +4,9 @@
     <string name="search">搜索</string>
     <string name="add_book">加入书架</string>
     <string name="reverse">反序</string>
+    <string name="tips">提示</string>
+    <string name="done">确定</string>
+    <string name="cancel">取消</string>
+    <string name="del">删除</string>
+    <string name="detail">详情</string>
 </resources>

@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -15,6 +14,9 @@ import com.google.gson.reflect.TypeToken;
 import com.hl.book.adapter.BookListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
+import com.hl.book.dialog.BookListBottomDialog;
+import com.hl.book.dialog.base.DialogMessage;
+import com.hl.book.dialog.base.OnDialogListener;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
@@ -175,5 +177,27 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         Book book = data.get(position);
         ActivitySkipUtil.skipAct(this, ChapterListActivity.class
                 , "book", book);
+    }
+
+    public void onItemSettingListener(View view) {
+        final int index = (int) view.getTag();
+        final Book book = data.get(index);
+        if (book==null)return;
+        BookListBottomDialog dialog = new BookListBottomDialog(this);
+        dialog.show();
+        dialog.setOnDialogListener(new OnDialogListener() {
+            @Override
+            public void onClick(DialogMessage message) {
+                if (message.getResult()!=DialogMessage.RESULT_OK)return;
+                if (message.getMessage().equals("del")){
+                    data.remove(index);
+                    saveBooks(data);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+                            , "book", book);
+                }
+            }
+        });
     }
 }
