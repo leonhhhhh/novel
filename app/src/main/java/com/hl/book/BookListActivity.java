@@ -3,6 +3,7 @@ package com.hl.book;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,14 +43,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/14 下拉刷新功能
 // TODO: 2020/7/14 更新未读红点提示
 // TODO: 2020/7/14 更新时间显示
 // TODO: 2020/7/14 增加数据库支持
-public class BookListActivity extends AppCompatActivity implements OnItemClickListener {
+public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<Book> data;
     private RecyclerView.Adapter adapter;
-
+    private SwipeRefreshLayout swipeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +60,8 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
 
     private void iniView() {
         data = new ArrayList<>();
+        swipeLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeLayout.setOnRefreshListener(this);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -71,11 +73,13 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     @Override
     protected void onResume() {
         super.onResume();
+        loadData();
+    }
+    private void loadData() {
         iniData();
         startGetData();
         adapter.notifyDataSetChanged();
     }
-
     private void iniData() {
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
@@ -158,6 +162,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                     public void onComplete() {
                         saveBooks(data);
                         adapter.notifyDataSetChanged();
+                        swipeLayout.setRefreshing(false);
                     }
 
                 });
@@ -206,5 +211,10 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                 }
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        loadData();
     }
 }
