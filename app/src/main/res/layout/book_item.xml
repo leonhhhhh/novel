@@ -4,26 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".BookListActivity"
-    android:padding="10dp"
+    android:padding="10dp" tools:ignore="RelativeOverlap,ContentDescription"
     android:background="@drawable/rv_selector_background">
     <ImageView android:id="@+id/ivCover"
         android:layout_width="44dp" android:scaleType="centerCrop"
-        android:layout_height="59dp" android:layout_marginRight="10dp"/>
+        android:layout_height="59dp" android:layout_marginEnd="10dp"
+        android:contentDescription="@string/cover" />
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="万千之心" android:layout_toEndOf="@+id/ivCover"
         android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        />
     <TextView
         android:id="@+id/tvNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="最新章节:"
-        android:layout_toEndOf="@+id/ivCover"
+        tools:text="最新章节:" android:maxLength="25"
+        android:layout_toEndOf="@+id/ivCover" android:ellipsize="end"
         android:layout_alignBottom="@+id/ivCover"
         />
+    <View android:id="@+id/viewPoint"
+        android:layout_width="8dp" android:layout_marginStart="3dp"
+        android:layout_height="8dp" android:layout_toEndOf="@+id/tvNew"
+        android:layout_alignTop="@+id/tvNew" android:layout_marginTop="5dp"
+        android:background="@drawable/circle_red" android:visibility="gone"/>
     <ImageView
         android:id="@+id/ivMore"
         android:layout_width="wrap_content"
@@ -31,5 +38,6 @@
         android:layout_alignTop="@+id/tvName"
         android:layout_alignParentEnd="true"
         android:src="@drawable/svg_ic_more"
-        android:padding="10dp" android:onClick="onItemSettingListener"/>
+        android:padding="10dp" android:onClick="onItemSettingListener"
+        />
 </RelativeLayout>

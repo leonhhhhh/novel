@@ -43,7 +43,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/14 更新未读红点提示
 // TODO: 2020/7/14 增加数据库支持
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<BookBean> data;
@@ -118,7 +117,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     private void saveBooks(ArrayList<BookBean> bookBeans) {
         String json = JsonUtil.toJson(bookBeans);
         Logger.i(json != null ? json : "");
-        AppSharedper.getInstance(this).putString("bookBeans", json);
+        AppSharedper.getInstance(this).putString("books", json);
     }
 
     @SuppressLint("CheckResult")
@@ -176,6 +175,9 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     @Override
     public void onItemClick(View view, int position) {
         BookBean bookBean = data.get(position);
+        bookBean.chick();
+        saveBooks(data);
+        adapter.notifyDataSetChanged();
         ActivitySkipUtil.skipAct(this, ChapterListActivity.class
                 , "bookBean", bookBean);
     }

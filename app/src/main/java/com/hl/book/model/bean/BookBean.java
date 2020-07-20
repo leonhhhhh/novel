@@ -18,6 +18,7 @@ public class BookBean implements Serializable {
     public String newChapter="";
     public String newTime="";
     public String newShowTime="";
+    public long chickTime = 0;
     public String desc="";
 
     public BookBean(){
@@ -39,7 +40,23 @@ public class BookBean implements Serializable {
         }
         assert date != null;
         newShowTime = DateUtil.format(date);
-
     }
 
+    /**
+     * 点击时间刷新
+     */
+    public void chick(){
+        chickTime = System.currentTimeMillis();
+    }
+    public boolean isShowChickPoint(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
+        Date date = null;
+        try {
+            date = format.parse(newTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date==null)return false;
+        return  date.getTime()>chickTime;
+    }
 }

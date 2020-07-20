@@ -25,12 +25,14 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
         TextView tvName;
         TextView tvNew;
         ImageView ivMore;
+        View viewPoint;
         MyViewHolder(View v) {
             super(v);
             ivCover = v.findViewById(R.id.ivCover);
             tvName = v.findViewById(R.id.tvName);
             tvNew = v.findViewById(R.id.tvNew);
             ivMore = v.findViewById(R.id.ivMore);
+            viewPoint = v.findViewById(R.id.viewPoint);
         }
     }
     public BookListAdapter(ArrayList<BookBean> chapterList, OnItemClickListener onItemClickListener) {
@@ -63,6 +65,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
                 }
             }
         });
+        if (bookBean.isShowChickPoint()){
+            holder.viewPoint.setVisibility(View.VISIBLE);
+        }else {
+            holder.viewPoint.setVisibility(View.GONE);
+        }
     }
     @Override
     public int getItemCount() {
