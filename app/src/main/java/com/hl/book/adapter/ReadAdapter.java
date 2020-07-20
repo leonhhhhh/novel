@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hl.book.R;
-import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.model.Chapter;
+import com.hl.book.model.bean.ChapterBean;
 
 import java.util.ArrayList;
 
 public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
-    private ArrayList<Chapter> chapterList;
+    private ArrayList<ChapterBean> chapterBeanList;
     private int  textSize=12;
     private boolean isNight = false;
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -29,8 +28,8 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
             tvContent = v.findViewById(R.id.tvContent);
         }
     }
-    public ReadAdapter(ArrayList<Chapter> chapterList) {
-        this.chapterList = chapterList;
+    public ReadAdapter(ArrayList<ChapterBean> chapterBeanList) {
+        this.chapterBeanList = chapterBeanList;
     }
 
     public void setTextSize(int textSize) {
@@ -54,7 +53,7 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull final ReadAdapter.MyViewHolder holder, int position) {
-        holder.tvContent.setText(Html.fromHtml(chapterList.get(position).content));
+        holder.tvContent.setText(Html.fromHtml(chapterBeanList.get(position).content));
         holder.tvContent.setTextSize(TypedValue.COMPLEX_UNIT_DIP,textSize);
         if (isNight){
             holder.tvContent.setTextColor(holder.tvContent.getContext().getResources().getColor(R.color.bbbbbb));
@@ -63,10 +62,10 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
             holder.tvContent.setTextColor(Color.BLACK);
             holder.tvTitle.setTextColor(Color.BLACK);
         }
-        holder.tvTitle.setText(chapterList.get(position).title);
+        holder.tvTitle.setText(chapterBeanList.get(position).title);
     }
     @Override
     public int getItemCount() {
-        return chapterList.size();
+        return chapterBeanList.size();
     }
 }

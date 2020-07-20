@@ -10,8 +10,7 @@ import android.widget.TextView;
 
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.model.Book;
-import com.hl.book.model.SearchBook;
+import com.hl.book.model.bean.SearchBookBean;
 import com.hl.book.util.image.ImageLoadUtil;
 import com.hl.book.util.image.ImageOptionsFactory;
 
@@ -19,7 +18,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder>{
-    private ArrayList<SearchBook> chapterList;
+    private ArrayList<SearchBookBean> chapterList;
     private OnItemClickListener onItemClickListener;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
@@ -38,7 +37,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
             tvAdd = v.findViewById(R.id.tvAdd);
         }
     }
-    public SearchAdapter(ArrayList<SearchBook> chapterList, OnItemClickListener onItemClickListener) {
+    public SearchAdapter(ArrayList<SearchBookBean> chapterList, OnItemClickListener onItemClickListener) {
         this.chapterList = chapterList;
         this.onItemClickListener = onItemClickListener;
     }
@@ -54,7 +53,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final SearchAdapter.MyViewHolder holder, int position) {
-        SearchBook searchBook = chapterList.get(position);
+        SearchBookBean searchBook = chapterList.get(position);
         ImageLoadUtil.loadImg(ImageOptionsFactory.getDefaultOption(holder.ivCover.getContext(),
                 searchBook.cover,holder.ivCover));
         holder.tvName.setText(searchBook.name);

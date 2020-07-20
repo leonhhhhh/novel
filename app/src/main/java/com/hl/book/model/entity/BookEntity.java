@@ -1,6 +1,9 @@
-package com.hl.book.model;
+package com.hl.book.model.entity;
 
 import com.hl.book.util.DateUtil;
+
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Index;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -8,7 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Book implements Serializable {
+public class BookEntity {
+    public int id;
     public String name="";
     public String author="";
     public String url="";
@@ -20,10 +24,10 @@ public class Book implements Serializable {
     public String newShowTime="";
     public String desc="";
 
-    public Book(){
+    public BookEntity(){
 
     }
-    public Book(String name,String url){
+    public BookEntity(String name, String url){
         this.name = name;
         this.url = url;
     }

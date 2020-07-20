@@ -16,10 +16,9 @@ import android.widget.Toast;
 import com.hl.book.adapter.ReadAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
-import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
-import com.hl.book.model.Chapter;
+import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.view.ReadClickView;
 import com.orhanobut.logger.Logger;
 
@@ -42,9 +41,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ReadActivity extends AppCompatActivity implements ReadClickListener{
     private ReadAdapter adapter;
-    private ArrayList<Chapter> data;
+    private ArrayList<ChapterBean> data;
     private RecyclerView recyclerView;
-    private Chapter chapter;
+    private ChapterBean chapterBean;
     private TextView tvFontSize;
     private View llyBottom;
 
@@ -53,13 +52,13 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
-        chapter = (Chapter) getIntent().getSerializableExtra("chapter");
-        if (chapter ==null){
+        chapterBean = (ChapterBean) getIntent().getSerializableExtra("chapterBean");
+        if (chapterBean ==null){
             Toast.makeText(this,"未知错误",Toast.LENGTH_SHORT).show();
             finish();
         }
-        assert chapter != null;
-        setTitle(chapter.title);
+        assert chapterBean != null;
+        setTitle(chapterBean.title);
 
         ReadClickView readClickView = findViewById(R.id.readClickView);
         readClickView.setClickListener(this);
@@ -84,7 +83,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }else {
             onNightListener(null);
         }
-        startGetContent(chapter.url);
+        startGetContent(chapterBean.url);
     }
     private void iniListener(){
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -143,16 +142,16 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
             return;
         }
         Element body = document.body();
-        Chapter chapter = new Chapter();
+        ChapterBean chapterBean = new ChapterBean();
         Element other = body.getElementsByClass("bookname").first();
         if (other==null){
-            chapter.title = "章节出错加载!!!!!!";
+            chapterBean.title = "章节出错加载!!!!!!";
         }else {
-            chapter.content = body.getElementById("content").html();
-            chapter.title = other.getElementsByTag("h1").text();
-            chapter.url = other.getElementsByClass("bottem1").first().
+            chapterBean.content = body.getElementById("content").html();
+            chapterBean.title = other.getElementsByTag("h1").text();
+            chapterBean.url = other.getElementsByClass("bottem1").first().
                     getElementsByTag("a").get(2).attr("href");
-            data.add(chapter);
+            data.add(chapterBean);
             adapter.notifyDataSetChanged();
             // TODO: 2020/7/9 如果当前已经看了很多  则需要把前面的回收掉
         }
@@ -164,9 +163,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
             return;
         }
         Logger.i("缓存下一页!!!!");
-        Chapter last = data.get(data.size()-1);
+        ChapterBean last = data.get(data.size()-1);
         startGetContent(last.url);
-        AppSharedper.getInstance(ReadActivity.this).putString(chapter.title,
+        AppSharedper.getInstance(ReadActivity.this).putString(chapterBean.title,
                 last.title);
     }
 

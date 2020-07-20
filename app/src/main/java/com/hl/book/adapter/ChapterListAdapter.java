@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.model.Chapter;
+import com.hl.book.model.bean.ChapterBean;
 
 import java.util.ArrayList;
 
 public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.MyViewHolder>{
-    private ArrayList<Chapter> chapterList;
+    private ArrayList<ChapterBean> chapterBeanList;
     private OnItemClickListener onItemClickListener;
     private int lastIndex = -1;
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -25,8 +25,8 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
             textView = v.findViewById(R.id.textView);
         }
     }
-    public ChapterListAdapter(ArrayList<Chapter> chapterList, OnItemClickListener onItemClickListener) {
-        this.chapterList = chapterList;
+    public ChapterListAdapter(ArrayList<ChapterBean> chapterBeanList, OnItemClickListener onItemClickListener) {
+        this.chapterBeanList = chapterBeanList;
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -50,7 +50,7 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
         }else {
             holder.textView.setTextColor(Color.BLACK);
         }
-        holder.textView.setText(chapterList.get(position).title);
+        holder.textView.setText(chapterBeanList.get(position).title);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +64,6 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
     }
     @Override
     public int getItemCount() {
-        return chapterList.size();
+        return chapterBeanList.size();
     }
 }

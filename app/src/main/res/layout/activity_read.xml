@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ReadActivity" >
-    <com.hl.book.view.ReadClickView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.hl.bookBean.view.ReadClickView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    </com.hl.book.view.ReadClickView>
+    </com.hl.bookBean.view.ReadClickView>
     <LinearLayout android:id="@+id/llyBottom"
         android:layout_width="match_parent" android:orientation="vertical"
         android:layout_height="wrap_content" android:background="#bbbbbb"

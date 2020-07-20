@@ -21,7 +21,7 @@ import com.hl.book.dialog.base.OnDialogListener;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
-import com.hl.book.model.Book;
+import com.hl.book.model.bean.BookBean;
 import com.hl.book.util.ActivitySkipUtil;
 import com.hl.book.util.net.JsonUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
@@ -44,10 +44,9 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2020/7/14 更新未读红点提示
-// TODO: 2020/7/14 更新时间显示
 // TODO: 2020/7/14 增加数据库支持
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
-    private ArrayList<Book> data;
+    private ArrayList<BookBean> data;
     private RecyclerView.Adapter adapter;
     private SwipeRefreshLayout swipeLayout;
     @Override
@@ -83,25 +82,15 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     private void iniData() {
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
-            Book book = new Book("离天大圣", "37299/");
-//            data.add(book);
-//            book = new Book("万千之心", "43283/");
-//            data.add(book);
-            book = new Book("沧元图", "41037/");
-//            data.add(book);
-//            book = new Book("超神机械师", "29105/");
-//            data.add(book);
-//            book = new Book("峡谷正能量", "40918/");
-//            data.add(book);
-//            book = new Book("小阁老", "43022/");
-            data.add(book);
+            BookBean bookBean  = new BookBean("沧元图", "41037/");
+            data.add(bookBean);
             saveBooks(data);
             AppSharedper.getInstance(this).putBoolean(AppSharedperKeys.IsFirstIn, false);
         } else {
             String json = AppSharedper.getInstance(this).getString("books", "");
             Logger.i(json != null ? json : "");
             data.clear();
-            ArrayList<Book> list = JsonUtil.getGson().fromJson(json, new TypeToken<List<Book>>() {
+            ArrayList<BookBean> list = JsonUtil.getGson().fromJson(json, new TypeToken<List<BookBean>>() {
             }.getType());
             assert list != null;
             data.addAll(list);
@@ -126,21 +115,21 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         return true;
     }
 
-    private void saveBooks(ArrayList<Book> books) {
-        String json = JsonUtil.toJson(books);
+    private void saveBooks(ArrayList<BookBean> bookBeans) {
+        String json = JsonUtil.toJson(bookBeans);
         Logger.i(json != null ? json : "");
-        AppSharedper.getInstance(this).putString("books", json);
+        AppSharedper.getInstance(this).putString("bookBeans", json);
     }
 
     @SuppressLint("CheckResult")
     private void startGetData() {
         Observable.fromIterable(data)
                 .subscribeOn(Schedulers.io())
-                .map(new Function<Book, Object>() {
+                .map(new Function<BookBean, Object>() {
                     @Override
-                    public Object apply(Book book) {
-                        doBooks(book);
-                        return book;
+                    public Object apply(BookBean bookBean) {
+                        doBooks(bookBean);
+                        return bookBean;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -167,18 +156,18 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
 
                 });
     }
-    private void doBooks(Book book) {
-        String fullUrl = BookResourceBaseUrl.biquge.BookUrl + book.url;
+    private void doBooks(BookBean bookBean) {
+        String fullUrl = BookResourceBaseUrl.biquge.BookUrl + bookBean.url;
         Connection connect = Jsoup.connect(fullUrl);
         connect.header("User-Agent", Config.UserAgent);
         try {
             Document document = connect.get();
             Element body = document.body();
-            book.cover = body.getElementById("fmimg").getElementsByTag("img").attr("src");
+            bookBean.cover = body.getElementById("fmimg").getElementsByTag("img").attr("src");
             Element info = document.body().getElementById("info");
-            book.author = info.getElementsByTag("p").get(0).text().substring(2);
-            book.setNewTime(info.getElementsByTag("p").get(2).text().replace("最后更新：",""));
-            book.newChapter = info.getElementsByTag("p").get(3).getElementsByTag("a").text();
+            bookBean.author = info.getElementsByTag("p").get(0).text().substring(2);
+            bookBean.setNewTime(info.getElementsByTag("p").get(2).text().replace("最后更新：",""));
+            bookBean.newChapter = info.getElementsByTag("p").get(3).getElementsByTag("a").text();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,15 +175,15 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
 
     @Override
     public void onItemClick(View view, int position) {
-        Book book = data.get(position);
+        BookBean bookBean = data.get(position);
         ActivitySkipUtil.skipAct(this, ChapterListActivity.class
-                , "book", book);
+                , "bookBean", bookBean);
     }
 
     public void onItemSettingListener(View view) {
         final int index = (int) view.getTag();
-        final Book book = data.get(index);
-        if (book==null)return;
+        final BookBean bookBean = data.get(index);
+        if (bookBean ==null)return;
         BookListBottomDialog dialog = new BookListBottomDialog(this);
         dialog.show();
         dialog.setOnDialogListener(new OnDialogListener() {
@@ -207,7 +196,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                     adapter.notifyDataSetChanged();
                 }else {
                     ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
-                            , "book", book);
+                            , "bookBean", bookBean);
                 }
             }
         });

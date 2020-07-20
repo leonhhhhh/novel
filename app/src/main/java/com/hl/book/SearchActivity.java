@@ -14,8 +14,8 @@ import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
-import com.hl.book.model.Book;
-import com.hl.book.model.SearchBook;
+import com.hl.book.model.bean.BookBean;
+import com.hl.book.model.bean.SearchBookBean;
 import com.hl.book.util.ActivitySkipUtil;
 import com.hl.book.util.net.JsonUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
@@ -27,13 +27,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -43,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 // TODO: 2020/7/13 搜索结果有多页的情况未处理
 // TODO: 2020/7/14  搜索结果与已加入的书籍进行匹配 初始化是否加入书架
 public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
-    private ArrayList<SearchBook> data;
+    private ArrayList<SearchBookBean> data;
     private RecyclerView.Adapter adapter;
     private EditText etSearch;
     @Override
@@ -65,37 +62,37 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
         recyclerView.setAdapter(adapter);
     }
 
-    private void delBooks(SearchBook searchBook) {
-        String json = AppSharedper.getInstance(this).getString("books", "");
+    private void delBooks(SearchBookBean searchBook) {
+        String json = AppSharedper.getInstance(this).getString("bookBeans", "");
         Logger.i(json != null ? json : "");
-        ArrayList<Book> books = JsonUtil.getGson().fromJson(json, new TypeToken<List<Book>>() {
+        ArrayList<BookBean> bookBeans = JsonUtil.getGson().fromJson(json, new TypeToken<List<BookBean>>() {
         }.getType());
-        assert books != null;
-        for (int i = 0; i < books.size(); i++) {
-            if (searchBook.name.equals(books.get(i).name)){
-                books.remove(i);
+        assert bookBeans != null;
+        for (int i = 0; i < bookBeans.size(); i++) {
+            if (searchBook.name.equals(bookBeans.get(i).name)){
+                bookBeans.remove(i);
                 break;
             }
         }
-        saveBooks(books);
+        saveBooks(bookBeans);
         searchBook.hasAdd = false;
         adapter.notifyDataSetChanged();
     }
-    private void addBooks(SearchBook book) {
-        String json = AppSharedper.getInstance(this).getString("books", "");
+    private void addBooks(SearchBookBean book) {
+        String json = AppSharedper.getInstance(this).getString("bookBeans", "");
         Logger.i(json != null ? json : "");
-        ArrayList<Book> books = JsonUtil.getGson().fromJson(json, new TypeToken<List<Book>>() {
+        ArrayList<BookBean> bookBeans = JsonUtil.getGson().fromJson(json, new TypeToken<List<BookBean>>() {
         }.getType());
-        assert books != null;
-        books.add(book);
-        saveBooks(books);
+        assert bookBeans != null;
+        bookBeans.add(book);
+        saveBooks(bookBeans);
         book.hasAdd = true;
         adapter.notifyDataSetChanged();
     }
-    private void saveBooks(ArrayList<Book> books) {
-        String json = JsonUtil.toJson(books);
+    private void saveBooks(ArrayList<BookBean> bookBeans) {
+        String json = JsonUtil.toJson(bookBeans);
         Logger.i(json != null ? json : "");
-        AppSharedper.getInstance(this).putString("books", json);
+        AppSharedper.getInstance(this).putString("bookBeans", json);
 
 
     }
@@ -144,7 +141,7 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
             Elements elements = body.getElementsByClass("result-item result-game-item");
             data.clear();
             for (Element e : elements) {
-                SearchBook book = new SearchBook();
+                SearchBookBean book = new SearchBookBean();
                 book.cover = e.getElementsByTag("img").attr("src");
                 book.url = e.getElementsByClass("result-game-item-pic").get(0)
                         .getElementsByTag("a").attr("href");
@@ -164,9 +161,9 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
 
     @Override
     public void onItemClick(View view, int position) {
-        Book book = data.get(position);
+        BookBean bookBean = data.get(position);
         ActivitySkipUtil.skipAct(this, ChapterListActivity.class
-                , "book", book);
+                , "bookBean", bookBean);
     }
 
     public void onSearchListener(View view) {
@@ -178,7 +175,7 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
     }
     public void onAddListener(View view) {
         int index = (int) view.getTag();
-        SearchBook book = data.get(index);
+        SearchBookBean book = data.get(index);
         if (book.hasAdd){
             delBooks(book);
         }else {

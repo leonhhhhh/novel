@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.model.Book;
+import com.hl.book.model.bean.BookBean;
 import com.hl.book.util.image.ImageLoadUtil;
 import com.hl.book.util.image.ImageOptionsFactory;
 
@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder>{
-    private ArrayList<Book> chapterList;
+    private ArrayList<BookBean> chapterList;
     private OnItemClickListener onItemClickListener;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
@@ -33,7 +33,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
             ivMore = v.findViewById(R.id.ivMore);
         }
     }
-    public BookListAdapter(ArrayList<Book> chapterList, OnItemClickListener onItemClickListener) {
+    public BookListAdapter(ArrayList<BookBean> chapterList, OnItemClickListener onItemClickListener) {
         this.chapterList = chapterList;
         this.onItemClickListener = onItemClickListener;
     }
@@ -49,11 +49,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.MyViewHolder holder, int position) {
-        Book book = chapterList.get(position);
+        BookBean bookBean = chapterList.get(position);
         ImageLoadUtil.loadImg(ImageOptionsFactory.getDefaultOption(holder.ivCover.getContext(),
-                book.cover,holder.ivCover));
-        holder.tvName.setText(book.name);
-        holder.tvNew.setText(MessageFormat.format("{0}:{1}", book.newShowTime, book.newChapter));
+                bookBean.cover,holder.ivCover));
+        holder.tvName.setText(bookBean.name);
+        holder.tvNew.setText(MessageFormat.format("{0}:{1}", bookBean.newShowTime, bookBean.newChapter));
         holder.ivMore.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

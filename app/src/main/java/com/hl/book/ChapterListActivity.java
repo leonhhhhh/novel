@@ -15,8 +15,8 @@ import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
-import com.hl.book.model.Book;
-import com.hl.book.model.Chapter;
+import com.hl.book.model.bean.BookBean;
+import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.util.ActivitySkipUtil;
 
 import org.jsoup.Connection;
@@ -47,18 +47,18 @@ import io.reactivex.schedulers.Schedulers;
 public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
-    private Book book;
-    private ArrayList<Chapter> data;
+    private BookBean bookBean;
+    private ArrayList<ChapterBean> data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_list);
-        book = (Book) getIntent().getSerializableExtra("book");
-        if (book==null){
+        bookBean = (BookBean) getIntent().getSerializableExtra("bookBean");
+        if (bookBean ==null){
             Toast.makeText(this,"未知错误",Toast.LENGTH_SHORT).show();
             finish();
         }
-        setTitle(book.name);
+        setTitle(bookBean.name);
         recyclerView = findViewById(R.id.recyclerView);
         data = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
@@ -75,7 +75,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) {
-                String url = BookResourceBaseUrl.biquge.BookUrl+book.url;
+                String url = BookResourceBaseUrl.biquge.BookUrl+ bookBean.url;
                 Connection connect = Jsoup.connect(url);
                 connect.header("User-Agent", Config.UserAgent);
                 try {
@@ -111,16 +111,16 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
         Element body = document.body();
         Elements links = body.getElementById("list").getElementsByTag("a");
         for (Element link : links) {
-            Chapter chapter = new Chapter();
-            chapter.url = link.attr("href");
-            chapter.title = link.text();
-            data.add(chapter);
+            ChapterBean chapterBean = new ChapterBean();
+            chapterBean.url = link.attr("href");
+            chapterBean.title = link.text();
+            data.add(chapterBean);
         }
         adapter.notifyDataSetChanged();
         scrollLastRead();
     }
     private void scrollLastRead(){
-        String lastChapter = AppSharedper.getInstance(this).getString(book.name,"");
+        String lastChapter = AppSharedper.getInstance(this).getString(bookBean.name,"");
         if (lastChapter.equals("")||data==null||data.size()==0){
             return;
         }
@@ -152,11 +152,11 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
     }
     @Override
     public void onItemClick(View view, int position) {
-        Chapter chapter = data.get(position);
-        AppSharedper.getInstance(this).putString(book.name,
-                chapter.title);
-        chapter.title = book.name;//设置下个界面的title为书名
+        ChapterBean chapterBean = data.get(position);
+        AppSharedper.getInstance(this).putString(bookBean.name,
+                chapterBean.title);
+        chapterBean.title = bookBean.name;//设置下个界面的title为书名
         ActivitySkipUtil.skipAct(this,ReadActivity.class
-        ,"chapter",chapter);
+        ,"chapterBean", chapterBean);
     }
 }
