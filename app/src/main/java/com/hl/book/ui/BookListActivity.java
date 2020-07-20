@@ -11,20 +11,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.gson.reflect.TypeToken;
 import com.hl.book.R;
-import com.hl.book.ui.adapter.BookListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
-import com.hl.book.ui.dialog.BookListBottomDialog;
-import com.hl.book.ui.dialog.base.DialogMessage;
-import com.hl.book.ui.dialog.base.OnDialogListener;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
+import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
+import com.hl.book.ui.adapter.BookListAdapter;
+import com.hl.book.ui.dialog.BookListBottomDialog;
+import com.hl.book.ui.dialog.base.DialogMessage;
+import com.hl.book.ui.dialog.base.OnDialogListener;
 import com.hl.book.util.ActivitySkipUtil;
-import com.hl.book.util.net.JsonUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -35,7 +34,6 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -82,18 +80,15 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     private void iniData() {
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
-            BookBean bookBean  = new BookBean("沧元图", "41037/");
+            BookBean bookBean  = new BookBean();
+            bookBean.name = "沧元图";
+            bookBean.url = "41037/";
             data.add(bookBean);
-            saveBooks(data);
+            DBCenter.getInstance().insertBooks(data);
             AppSharedper.getInstance(this).putBoolean(AppSharedperKeys.IsFirstIn, false);
         } else {
-            String json = AppSharedper.getInstance(this).getString("books", "");
-            Logger.i(json != null ? json : "");
             data.clear();
-            ArrayList<BookBean> list = JsonUtil.getGson().fromJson(json, new TypeToken<List<BookBean>>() {
-            }.getType());
-            assert list != null;
-            data.addAll(list);
+            data.addAll(DBCenter.getInstance().getBooks());
         }
     }
 
@@ -113,12 +108,6 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                 break;
         }
         return true;
-    }
-
-    private void saveBooks(ArrayList<BookBean> bookBeans) {
-        String json = JsonUtil.toJson(bookBeans);
-        Logger.i(json != null ? json : "");
-        AppSharedper.getInstance(this).putString("books", json);
     }
 
     @SuppressLint("CheckResult")
@@ -149,7 +138,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
 
                     @Override
                     public void onComplete() {
-                        saveBooks(data);
+                        DBCenter.getInstance().insertBooks(data);
                         adapter.notifyDataSetChanged();
                         swipeLayout.setRefreshing(false);
                     }
@@ -177,10 +166,10 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     public void onItemClick(View view, int position) {
         BookBean bookBean = data.get(position);
         bookBean.chick();
-        saveBooks(data);
+        DBCenter.getInstance().updateBook(bookBean);
         adapter.notifyDataSetChanged();
         ActivitySkipUtil.skipAct(this, ChapterListActivity.class
-                , "bookBean", bookBean);
+                , "book", bookBean);
     }
 
     public void onItemSettingListener(View view) {
@@ -194,8 +183,8 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
             public void onClick(DialogMessage message) {
                 if (message.getResult()!=DialogMessage.RESULT_OK)return;
                 if (message.getMessage().equals("del")){
+                    DBCenter.getInstance().delBook(data.get(index));
                     data.remove(index);
-                    saveBooks(data);
                     adapter.notifyDataSetChanged();
                 }else {
                     ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
+import com.hl.book.localdata.database.DBCenter;
+import com.hl.book.model.bean.BookBean;
 import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
@@ -42,11 +44,12 @@ import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2020/7/20 设置界面增加当前章节标题
 
-public class ReadActivity extends AppCompatActivity implements ReadClickListener{
+public class ReadActivity extends AppCompatActivity implements ReadClickListener {
     private ReadAdapter adapter;
     private ArrayList<ChapterBean> data;
     private RecyclerView recyclerView;
     private ChapterBean chapterBean;
+    private BookBean bookBean;
     private TextView tvFontSize;
     private View llyBottom;
 
@@ -55,20 +58,20 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
+        bookBean = (BookBean) getIntent().getSerializableExtra("book");
         chapterBean = (ChapterBean) getIntent().getSerializableExtra("chapterBean");
-        if (chapterBean ==null){
-            Toast.makeText(this,"未知错误",Toast.LENGTH_SHORT).show();
+        if (chapterBean == null || bookBean == null) {
+            Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
             finish();
         }
-        assert chapterBean != null;
-        setTitle(chapterBean.title);
+        setTitle(bookBean.name);
 
         ReadClickView readClickView = findViewById(R.id.readClickView);
         readClickView.setClickListener(this);
         recyclerView = findViewById(R.id.recyclerView);
         llyBottom = findViewById(R.id.llyBottom);
         tvFontSize = findViewById(R.id.tvFontSize);
-        int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
+        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         iniListener();
         data = new ArrayList<>();
@@ -80,15 +83,16 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         adapter = new ReadAdapter(data);
         recyclerView.setAdapter(adapter);
         adapter.setTextSize(fontSize);
-        boolean isNight = AppSharedper.getInstance(this).getBoolean("isNight",false);
-        if (!isNight){
+        boolean isNight = AppSharedper.getInstance(this).getBoolean("isNight", false);
+        if (!isNight) {
             onDayListener(null);
-        }else {
+        } else {
             onNightListener(null);
         }
         startGetContent(chapterBean.url);
     }
-    private void iniListener(){
+
+    private void iniListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -97,13 +101,15 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
             }
         });
     }
+
     private boolean isLoading = false;
-    private void startGetContent(String url){
-        if (isLoading){
+
+    private void startGetContent(String url) {
+        if (isLoading) {
             return;
         }
         isLoading = true;
-        final String fullUrl = BookResourceBaseUrl.biquge.ChapterUrl +url;
+        final String fullUrl = BookResourceBaseUrl.biquge.ChapterUrl + url;
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) {
@@ -120,36 +126,38 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Object>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-            @Override
-            public void onNext(Object value) {
-                doContent((Document) value);
-            }
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                    @Override
+                    public void onNext(Object value) {
+                        doContent((Document) value);
+                    }
 
-            @Override
-            public void onComplete() {
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-        });
+                    @Override
+                    public void onComplete() {
+                    }
+
+                });
     }
-    private void doContent(Document document){
-        if (document==null){
+
+    private void doContent(Document document) {
+        if (document == null) {
             isLoading = false;
             return;
         }
         Element body = document.body();
         ChapterBean chapterBean = new ChapterBean();
         Element other = body.getElementsByClass("bookname").first();
-        if (other==null){
+        if (other == null) {
             chapterBean.title = "章节出错加载!!!!!!";
-        }else {
+        } else {
             chapterBean.content = body.getElementById("content").html();
             chapterBean.title = other.getElementsByTag("h1").text();
             chapterBean.url = other.getElementsByClass("bottem1").first().
@@ -160,26 +168,29 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }
         isLoading = false;
     }
+
     private void getNextChapter() {
-        if (recyclerView.computeVerticalScrollRange()-recyclerView.computeVerticalScrollOffset()>
-                recyclerView.computeVerticalScrollExtent()*5) {
+        if (recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollOffset() >
+                recyclerView.computeVerticalScrollExtent() * 5) {
             return;
         }
         Logger.i("缓存下一页!!!!");
-        ChapterBean last = data.get(data.size()-1);
+        ChapterBean last = data.get(data.size() - 1);
         startGetContent(last.url);
-        AppSharedper.getInstance(ReadActivity.this).putString(chapterBean.title,
-                last.title);
+        bookBean.lastChapter = last.title;
+        bookBean.lastChapterUrl = last.url;
+        DBCenter.getInstance().updateBook(bookBean);
     }
 
     public void onSettingListener(View view) {
         view.setSelected(!view.isSelected());
-        if (view.isSelected()){
+        if (view.isSelected()) {
             findViewById(R.id.llyBottom).setVisibility(View.VISIBLE);
-        }else {
+        } else {
             findViewById(R.id.llyBottom).setVisibility(View.GONE);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_book_list, menu);
@@ -190,9 +201,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.actionMore:
-                if (llyBottom.getVisibility() != View.VISIBLE){
+                if (llyBottom.getVisibility() != View.VISIBLE) {
                     llyBottom.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     llyBottom.setVisibility(View.GONE);
                 }
                 break;
@@ -203,17 +214,17 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     }
 
     public void onFontSizeUpListener(View view) {
-        int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
+        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
         fontSize++;
-        AppSharedper.getInstance(this).putInt("fontSize",fontSize);
+        AppSharedper.getInstance(this).putInt("fontSize", fontSize);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         adapter.setTextSize(fontSize);
     }
 
     public void onFontSizeDownListener(View view) {
-        int fontSize = AppSharedper.getInstance(this).getInt("fontSize",12);
+        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
         fontSize--;
-        AppSharedper.getInstance(this).putInt("fontSize",fontSize);
+        AppSharedper.getInstance(this).putInt("fontSize", fontSize);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         adapter.setTextSize(fontSize);
     }
@@ -221,23 +232,23 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     public void onDayListener(View view) {
         adapter.setNight(false);
         recyclerView.setBackgroundColor(Color.WHITE);
-        AppSharedper.getInstance(this).putBoolean("isNight",false);
+        AppSharedper.getInstance(this).putBoolean("isNight", false);
     }
 
     public void onNightListener(View view) {
         adapter.setNight(true);
         recyclerView.setBackgroundColor(Color.BLACK);
-        AppSharedper.getInstance(this).putBoolean("isNight",true);
+        AppSharedper.getInstance(this).putBoolean("isNight", true);
     }
 
     @Override
     public void onTopLeftClick(View view) {
-        recyclerView.scrollBy(0,- recyclerView.computeVerticalScrollExtent()*9/10);
+        recyclerView.scrollBy(0, -recyclerView.computeVerticalScrollExtent() * 9 / 10);
     }
 
     @Override
     public void onTopRightClick(View view) {
-        recyclerView.scrollBy(0,- recyclerView.computeVerticalScrollExtent()*9/10);
+        recyclerView.scrollBy(0, -recyclerView.computeVerticalScrollExtent() * 9 / 10);
     }
 
     @Override
@@ -248,13 +259,13 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     @Override
     public void onBottomLeftClick(View view) {
-        recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
+        recyclerView.scrollBy(0, recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollExtent() / 10);
         getNextChapter();
     }
 
     @Override
     public void onBottomRightClick(View view) {
-        recyclerView.scrollBy(0,recyclerView.computeVerticalScrollExtent()-recyclerView.computeVerticalScrollExtent()/10);
+        recyclerView.scrollBy(0, recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollExtent() / 10);
         getNextChapter();
     }
 }

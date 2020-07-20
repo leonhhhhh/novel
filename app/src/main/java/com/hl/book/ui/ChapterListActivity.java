@@ -54,7 +54,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_list);
-        bookBean = (BookBean) getIntent().getSerializableExtra("bookBean");
+        bookBean = (BookBean) getIntent().getSerializableExtra("book");
         if (bookBean ==null){
             Toast.makeText(this,"未知错误",Toast.LENGTH_SHORT).show();
             finish();
@@ -121,7 +121,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
         scrollLastRead();
     }
     private void scrollLastRead(){
-        String lastChapter = AppSharedper.getInstance(this).getString(bookBean.name,"");
+        String lastChapter = bookBean.lastChapter;
         if (lastChapter.equals("")||data==null||data.size()==0){
             return;
         }
@@ -158,6 +158,6 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
                 chapterBean.title);
         chapterBean.title = bookBean.name;//设置下个界面的title为书名
         ActivitySkipUtil.skipAct(this,ReadActivity.class
-        ,"chapterBean", chapterBean);
+        ,"book", bookBean,"chapterBean",chapterBean);
     }
 }
