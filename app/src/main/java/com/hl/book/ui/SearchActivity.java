@@ -1,4 +1,4 @@
-package com.hl.book;
+package com.hl.book.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.google.gson.reflect.TypeToken;
-import com.hl.book.adapter.SearchAdapter;
+import com.hl.book.R;
+import com.hl.book.ui.adapter.SearchAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;

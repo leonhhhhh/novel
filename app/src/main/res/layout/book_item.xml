@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".BookListActivity"
+    tools:context=".ui.BookListActivity"
     android:padding="10dp" tools:ignore="RelativeOverlap,ContentDescription"
     android:background="@drawable/rv_selector_background">
     <ImageView android:id="@+id/ivCover"

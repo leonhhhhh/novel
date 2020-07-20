@@ -1,4 +1,4 @@
-package com.hl.book.adapter;
+package com.hl.book.ui.adapter;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;

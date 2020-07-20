@@ -12,16 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".BookListActivity">
+        <activity android:name=".ui.BookListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ReadActivity" android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ChapterListActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".ui.ReadActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.ChapterListActivity" />
+        <activity android:name=".ui.SearchActivity" />
     </application>
 
 </manifest>

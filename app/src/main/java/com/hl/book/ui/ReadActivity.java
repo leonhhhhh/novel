@@ -1,4 +1,4 @@
-package com.hl.book;
+package com.hl.book.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -13,13 +13,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hl.book.adapter.ReadAdapter;
+import com.hl.book.R;
+import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.model.bean.ChapterBean;
-import com.hl.book.view.ReadClickView;
+import com.hl.book.ui.view.ReadClickView;
 import com.orhanobut.logger.Logger;
 
 import org.jsoup.Connection;
@@ -38,6 +39,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+// TODO: 2020/7/20 设置界面增加当前章节标题
 
 public class ReadActivity extends AppCompatActivity implements ReadClickListener{
     private ReadAdapter adapter;

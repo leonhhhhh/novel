@@ -1,4 +1,4 @@
-package com.hl.book;
+package com.hl.book.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,7 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.hl.book.adapter.ChapterListAdapter;
+import com.hl.book.R;
+import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;

@@ -1,4 +1,4 @@
-package com.hl.book.view;
+package com.hl.book.ui.view;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

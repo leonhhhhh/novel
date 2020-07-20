@@ -1,4 +1,4 @@
-package com.hl.book.dialog.base;
+package com.hl.book.ui.dialog.base;
 
 import android.app.Dialog;
 import android.content.Context;

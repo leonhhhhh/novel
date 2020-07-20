@@ -1,4 +1,4 @@
-package com.hl.book;
+package com.hl.book.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -12,12 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
-import com.hl.book.adapter.BookListAdapter;
+import com.hl.book.R;
+import com.hl.book.ui.adapter.BookListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
-import com.hl.book.dialog.BookListBottomDialog;
-import com.hl.book.dialog.base.DialogMessage;
-import com.hl.book.dialog.base.OnDialogListener;
+import com.hl.book.ui.dialog.BookListBottomDialog;
+import com.hl.book.ui.dialog.base.DialogMessage;
+import com.hl.book.ui.dialog.base.OnDialogListener;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;

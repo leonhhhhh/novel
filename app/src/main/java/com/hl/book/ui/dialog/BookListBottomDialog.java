@@ -1,4 +1,4 @@
-package com.hl.book.dialog;
+package com.hl.book.ui.dialog;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hl.book.R;
-import com.hl.book.dialog.base.BaseDialog;
-import com.hl.book.dialog.base.DialogMessage;
+import com.hl.book.ui.dialog.base.BaseDialog;
+import com.hl.book.ui.dialog.base.DialogMessage;
 
 
 /**
