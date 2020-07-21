@@ -42,7 +42,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/14 增加数据库支持
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<BookBean> data;
     private RecyclerView.Adapter adapter;
@@ -83,6 +82,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
             BookBean bookBean  = new BookBean();
             bookBean.name = "沧元图";
             bookBean.url = "41037/";
+            bookBean.hasAdd = true;
             data.add(bookBean);
             DBCenter.getInstance().insertBooks(data);
             AppSharedper.getInstance(this).putBoolean(AppSharedperKeys.IsFirstIn, false);
@@ -117,6 +117,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                 .map(new Function<BookBean, Object>() {
                     @Override
                     public Object apply(BookBean bookBean) {
+                        bookBean.hasAdd = true;
                         doBooks(bookBean);
                         return bookBean;
                     }

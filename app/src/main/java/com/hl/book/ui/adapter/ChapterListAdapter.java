@@ -34,6 +34,10 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
         this.lastIndex = lastIndex;
     }
 
+    public int getLastIndex() {
+        return lastIndex;
+    }
+
     @NonNull
     @Override
     public ChapterListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,

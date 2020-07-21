@@ -8,9 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
+import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
@@ -29,6 +31,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -48,6 +51,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
+    private TextView tvAdd;
     private BookBean bookBean;
     private ArrayList<ChapterBean> data;
     @Override
@@ -61,6 +65,12 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
         }
         setTitle(bookBean.name);
         recyclerView = findViewById(R.id.recyclerView);
+        tvAdd = findViewById(R.id.tvAdd);
+        if (bookBean.hasAdd){
+            tvAdd.setText("移除书架");
+        }else {
+            tvAdd.setText("加入书架");
+        }
         data = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
 
@@ -130,6 +140,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
                 recyclerView.scrollToPosition(i);
                 adapter.setLastIndex(i);
                 adapter.notifyDataSetChanged();
+                break;
             }
         }
     }
@@ -159,5 +170,27 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
         chapterBean.title = bookBean.name;//设置下个界面的title为书名
         ActivitySkipUtil.skipAct(this,ReadActivity.class
         ,"book", bookBean,"chapterBean",chapterBean);
+    }
+
+    public void onAddListener(View view) {
+        bookBean.hasAdd = !bookBean.hasAdd;
+        if (bookBean.hasAdd){
+            DBCenter.getInstance().insertBook(bookBean);
+            tvAdd.setText("移除书架");
+        }else {
+            DBCenter.getInstance().delBook(bookBean);
+            tvAdd.setText("加入书架");
+
+        }
+
+    }
+
+    public void onReadListener(View view) {
+        ChapterBean chapterBean = data.get(adapter.getLastIndex());
+        AppSharedper.getInstance(this).putString(bookBean.name,
+                chapterBean.title);
+        chapterBean.title = bookBean.name;//设置下个界面的title为书名
+        ActivitySkipUtil.skipAct(this,ReadActivity.class
+                ,"book", bookBean,"chapterBean",chapterBean);
     }
 }
