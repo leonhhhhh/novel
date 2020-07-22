@@ -27,6 +27,9 @@ public class DBCenter {
     public List<BookBean> getBooks(){
         return dbHelper.getBookDao().loadAll();
     }
+    public BookBean getBook(String key){
+        return dbHelper.getBookDao().load(key);
+    }
     public void insertBooks(ArrayList<BookBean> bookBeans){
         if (bookBeans==null)return;
         dbHelper.getBookDao().insertOrReplaceInTx(bookBeans);

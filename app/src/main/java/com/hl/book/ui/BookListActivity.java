@@ -143,7 +143,6 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                         adapter.notifyDataSetChanged();
                         swipeLayout.setRefreshing(false);
                     }
-
                 });
     }
     private void doBooks(BookBean bookBean) {
@@ -189,7 +188,7 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
                     adapter.notifyDataSetChanged();
                 }else {
                     ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
-                            , "bookBean", bookBean);
+                            , "book", bookBean);
                 }
             }
         });

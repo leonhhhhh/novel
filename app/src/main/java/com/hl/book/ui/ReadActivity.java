@@ -64,6 +64,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
             Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
             finish();
         }
+        bookBean.lastChapter = chapterBean.title;
+        bookBean.lastChapterUrl = chapterBean.url;
+        DBCenter.getInstance().updateBook(bookBean);
         setTitle(bookBean.name);
 
         ReadClickView readClickView = findViewById(R.id.readClickView);

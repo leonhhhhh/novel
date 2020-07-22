@@ -82,6 +82,16 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
 
         startGetData();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (data.size()>0){
+            bookBean = DBCenter.getInstance().getBook(bookBean.url);
+            scrollLastRead();
+        }
+    }
+
     private void startGetData(){
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
@@ -165,9 +175,6 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
     @Override
     public void onItemClick(View view, int position) {
         ChapterBean chapterBean = data.get(position);
-        AppSharedper.getInstance(this).putString(bookBean.name,
-                chapterBean.title);
-        chapterBean.title = bookBean.name;//设置下个界面的title为书名
         ActivitySkipUtil.skipAct(this,ReadActivity.class
         ,"book", bookBean,"chapterBean",chapterBean);
     }
@@ -187,9 +194,6 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
 
     public void onReadListener(View view) {
         ChapterBean chapterBean = data.get(adapter.getLastIndex());
-        AppSharedper.getInstance(this).putString(bookBean.name,
-                chapterBean.title);
-        chapterBean.title = bookBean.name;//设置下个界面的title为书名
         ActivitySkipUtil.skipAct(this,ReadActivity.class
                 ,"book", bookBean,"chapterBean",chapterBean);
     }
