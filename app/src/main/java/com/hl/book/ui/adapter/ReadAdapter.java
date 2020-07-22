@@ -56,16 +56,19 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
         holder.tvContent.setText(Html.fromHtml(chapterBeanList.get(position).content));
         holder.tvContent.setTextSize(TypedValue.COMPLEX_UNIT_DIP,textSize);
         if (isNight){
-            holder.tvContent.setTextColor(holder.tvContent.getContext().getResources().getColor(R.color.bbbbbb));
-            holder.tvTitle.setTextColor(holder.tvContent.getContext().getResources().getColor(R.color.bbbbbb));
+            holder.tvContent.setTextColor(getColor(holder,R.color.color_eaedf2));
+            holder.tvTitle.setTextColor(getColor(holder,R.color.color_eaedf2));
         }else {
-            holder.tvContent.setTextColor(Color.BLACK);
-            holder.tvTitle.setTextColor(Color.BLACK);
+            holder.tvContent.setTextColor(getColor(holder,R.color.color_4a4b50));
+            holder.tvTitle.setTextColor(getColor(holder,R.color.color_4a4b50));
         }
         holder.tvTitle.setText(chapterBeanList.get(position).title);
     }
     @Override
     public int getItemCount() {
         return chapterBeanList.size();
+    }
+    private int getColor(ReadAdapter.MyViewHolder holder,int colorId){
+        return holder.tvContent.getContext().getResources().getColor(colorId);
     }
 }

@@ -72,7 +72,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         ReadClickView readClickView = findViewById(R.id.readClickView);
         readClickView.setClickListener(this);
         recyclerView = findViewById(R.id.recyclerView);
-        llyBottom = findViewById(R.id.llyBottom);
+        llyBottom = findViewById(R.id.llySetting);
         tvFontSize = findViewById(R.id.tvFontSize);
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
@@ -188,9 +188,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     public void onSettingListener(View view) {
         view.setSelected(!view.isSelected());
         if (view.isSelected()) {
-            findViewById(R.id.llyBottom).setVisibility(View.VISIBLE);
+            findViewById(R.id.llySetting).setVisibility(View.VISIBLE);
         } else {
-            findViewById(R.id.llyBottom).setVisibility(View.GONE);
+            findViewById(R.id.llySetting).setVisibility(View.GONE);
         }
     }
 
@@ -234,13 +234,13 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     public void onDayListener(View view) {
         adapter.setNight(false);
-        recyclerView.setBackgroundColor(Color.WHITE);
+        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
         AppSharedper.getInstance(this).putBoolean("isNight", false);
     }
 
     public void onNightListener(View view) {
         adapter.setNight(true);
-        recyclerView.setBackgroundColor(Color.BLACK);
+        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_171D26));
         AppSharedper.getInstance(this).putBoolean("isNight", true);
     }
 
