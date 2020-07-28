@@ -42,6 +42,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+// TODO: 2020/7/28 阅读历史列表 (本地)
+// TODO: 2020/7/28 养肥区域 
+// TODO: 2020/7/28 垃圾桶 
+// TODO: 2020/7/28 书籍展示:列表和宫格切换
+// TODO: 2020/7/28 长按多选设置:删除 养肥 垃圾桶
 public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<BookBean> data;
     private RecyclerView.Adapter adapter;

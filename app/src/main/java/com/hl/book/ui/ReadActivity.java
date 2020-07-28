@@ -42,8 +42,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/20 设置界面增加当前章节标题
-
+// TODO: 2020/7/20 内容显示:章节名  
+// TODO: 2020/7/28 设置功能--交互--音量键翻页 
+// TODO: 2020/7/28 设置功能--主题设置--主题颜色,字体大小,字体,行间距字间距 
+// TODO: 2020/7/28 设置功能--目录 
+// TODO: 2020/7/28 设置功能--全屏or非全屏 
+// TODO: 2020/7/28 设置功能-亮度-滑动设置,跟随系统
 public class ReadActivity extends AppCompatActivity implements ReadClickListener {
     private ReadAdapter adapter;
     private ArrayList<ChapterBean> data;
