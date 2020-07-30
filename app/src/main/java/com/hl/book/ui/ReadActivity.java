@@ -238,7 +238,8 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     public void onDayListener(View view) {
         adapter.setNight(false);
-        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
+//        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
+        recyclerView.setBackgroundColor(Color.WHITE);
         AppSharedper.getInstance(this).putBoolean("isNight", false);
     }
 
