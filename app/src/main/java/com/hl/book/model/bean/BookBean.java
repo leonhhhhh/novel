@@ -27,6 +27,7 @@ public class BookBean implements Serializable {
     public String cover="";
     public String lastChapter="";
     public String lastChapterUrl="";
+    public int lastChapterProgress=0;
     public String newChapter="";
     public String newTime="";
     public String newShowTime="";
@@ -34,16 +35,17 @@ public class BookBean implements Serializable {
     public long chickTime=0;
 
 
-    @Generated(hash = 1714870734)
+    @Generated(hash = 2004827972)
     public BookBean(String name, String author, String url, String cover, String lastChapter,
-                    String lastChapterUrl, String newChapter, String newTime, String newShowTime,
-                    String desc, long chickTime) {
+            String lastChapterUrl, int lastChapterProgress, String newChapter, String newTime,
+            String newShowTime, String desc, long chickTime) {
         this.name = name;
         this.author = author;
         this.url = url;
         this.cover = cover;
         this.lastChapter = lastChapter;
         this.lastChapterUrl = lastChapterUrl;
+        this.lastChapterProgress = lastChapterProgress;
         this.newChapter = newChapter;
         this.newTime = newTime;
         this.newShowTime = newShowTime;
@@ -147,5 +149,11 @@ public class BookBean implements Serializable {
         }
         if (date==null)return false;
         return  date.getTime()>chickTime;
+    }
+    public int getLastChapterProgress() {
+        return this.lastChapterProgress;
+    }
+    public void setLastChapterProgress(int lastChapterProgress) {
+        this.lastChapterProgress = lastChapterProgress;
     }
 }

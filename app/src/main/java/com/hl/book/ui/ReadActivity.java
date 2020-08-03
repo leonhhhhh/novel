@@ -55,7 +55,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     private BookBean bookBean;
     private TextView tvFontSize;
     private View llyBottom;
-
+    private boolean needScrollLastProcess = false;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         if (chapterBean == null || bookBean == null) {
             Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
             finish();
+        }
+        if (bookBean.lastChapterUrl.equals(chapterBean.url) && bookBean.lastChapterProgress>0){
+            needScrollLastProcess = true;
         }
         bookBean.lastChapter = chapterBean.title;
         bookBean.lastChapterUrl = chapterBean.url;
@@ -128,6 +131,16 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (data.size()>0){
+            bookBean.lastChapterProgress = recyclerView.getChildAt(0).getTop();
+            bookBean.lastChapterProgress = Math.abs(bookBean.lastChapterProgress);
+            DBCenter.getInstance().updateBook(bookBean);
+        }
+    }
+
     private boolean isLoading = false;
 
     private void startGetContent(String url) {
@@ -186,10 +199,24 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         } else {
             chapterBean.content = body.getElementById("content").html();
             chapterBean.title = other.getElementsByTag("h1").text();
-            chapterBean.url = other.getElementsByClass("bottem1").first().
+            chapterBean.nextUrl = other.getElementsByClass("bottem1").first().
                     getElementsByTag("a").get(2).attr("href");
+            if (data.size()==0){
+                chapterBean.url = this.chapterBean.url;
+            }else {
+                chapterBean.url = data.get(data.size()-1).nextUrl;
+            }
             data.add(chapterBean);
             adapter.notifyDataSetChanged();
+            if (needScrollLastProcess){
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollBy(0, bookBean.lastChapterProgress);
+                    }
+                });
+                needScrollLastProcess = false;
+            }
             // TODO: 2020/7/9 如果当前已经看了很多  则需要把前面的回收掉
         }
         isLoading = false;
@@ -202,7 +229,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }
         Logger.i("缓存下一页!!!!");
         ChapterBean last = data.get(data.size() - 1);
-        startGetContent(last.url);
+        startGetContent(last.nextUrl);
         bookBean.lastChapter = last.title;
         bookBean.lastChapterUrl = last.url;
         DBCenter.getInstance().updateBook(bookBean);
