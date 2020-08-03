@@ -36,8 +36,8 @@ public class BookBean implements Serializable {
 
     @Generated(hash = 1714870734)
     public BookBean(String name, String author, String url, String cover, String lastChapter,
-            String lastChapterUrl, String newChapter, String newTime, String newShowTime,
-            String desc, long chickTime) {
+                    String lastChapterUrl, String newChapter, String newTime, String newShowTime,
+                    String desc, long chickTime) {
         this.name = name;
         this.author = author;
         this.url = url;
