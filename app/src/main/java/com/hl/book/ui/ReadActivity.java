@@ -1,7 +1,6 @@
 package com.hl.book.ui;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
-import com.hl.book.localdata.database.DBCenter;
-import com.hl.book.model.bean.BookBean;
-import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
+import com.hl.book.localdata.database.DBCenter;
+import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.ui.view.ReadClickView;
 import com.orhanobut.logger.Logger;
 
@@ -42,8 +41,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/20 内容显示:章节名  
-// TODO: 2020/7/28 设置功能--交互--音量键翻页 
+// TODO: 2020/7/28 设置功能--交互--音量键翻页
 // TODO: 2020/7/28 设置功能--主题设置--主题颜色,字体大小,字体,行间距字间距 
 // TODO: 2020/7/28 设置功能--目录 
 // TODO: 2020/7/28 设置功能--全屏or非全屏 
@@ -52,6 +50,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     private ReadAdapter adapter;
     private ArrayList<ChapterBean> data;
     private RecyclerView recyclerView;
+    private TextView tvTitle;
     private ChapterBean chapterBean;
     private BookBean bookBean;
     private TextView tvFontSize;
@@ -72,10 +71,11 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         bookBean.lastChapterUrl = chapterBean.url;
         DBCenter.getInstance().updateBook(bookBean);
         setTitle(bookBean.name);
-
         ReadClickView readClickView = findViewById(R.id.readClickView);
         readClickView.setClickListener(this);
         recyclerView = findViewById(R.id.recyclerView);
+        tvTitle = findViewById(R.id.tvTitle);
+        tvTitle.setText(chapterBean.title);
         llyBottom = findViewById(R.id.llySetting);
         tvFontSize = findViewById(R.id.tvFontSize);
         int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
@@ -83,10 +83,8 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         iniListener();
         data = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         adapter = new ReadAdapter(data);
         recyclerView.setAdapter(adapter);
         adapter.setTextSize(fontSize);
@@ -98,12 +96,33 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }
         startGetContent(chapterBean.url);
     }
+    View currentView;
+    StringBuilder builder = new StringBuilder();
 
     private void iniListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if (recyclerView.getChildCount() <= 0) {
+                    return;
+                }
+                currentView = recyclerView.getChildAt(0);
+                int currentPosition = ((RecyclerView.LayoutParams) currentView.getLayoutParams()).getViewAdapterPosition();
+                chapterBean = data.get(currentPosition);
+                tvTitle.setText(chapterBean.title);
+                builder.delete(0,builder.length());
+                builder.append("\n当前item:");
+                builder.append(currentPosition);
+                builder.append("\n当前界面总长度:");
+                builder.append(recyclerView.computeVerticalScrollRange());
+                builder.append("\n当前界面偏移量:");
+                builder.append(recyclerView.computeVerticalScrollOffset());
+                builder.append("\n当前一屏长度:");
+                builder.append(recyclerView.computeVerticalScrollExtent());
+                builder.append("\n当前item距离顶部高度:");
+                builder.append(currentView.getTop());
+                Logger.e(builder.toString());
                 getNextChapter();
             }
         });
@@ -238,14 +257,17 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     public void onDayListener(View view) {
         adapter.setNight(false);
-//        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
-        recyclerView.setBackgroundColor(Color.WHITE);
+        recyclerView.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
+        tvTitle.setBackgroundColor(getResources().getColor(R.color.color_EAEDF2));
+        tvTitle.setTextColor(getResources().getColor(R.color.color_4a4b50));
         AppSharedper.getInstance(this).putBoolean("isNight", false);
     }
 
     public void onNightListener(View view) {
         adapter.setNight(true);
         recyclerView.setBackgroundColor(getResources().getColor(R.color.color_171D26));
+        tvTitle.setBackgroundColor(getResources().getColor(R.color.color_171D26));
+        tvTitle.setTextColor(getResources().getColor(R.color.color_eaedf2));
         AppSharedper.getInstance(this).putBoolean("isNight", true);
     }
 

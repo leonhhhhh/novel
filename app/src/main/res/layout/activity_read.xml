@@ -4,10 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ReadActivity" >
-    <com.hl.book.ui.view.ReadClickView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView android:id="@+id/tvTitle" android:textSize="12sp"
+        android:layout_width="match_parent"  android:gravity="center_vertical"
+        android:layout_height="18dp" />
+    <com.hl.book.ui.view.ReadClickView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.ReadActivity" android:id="@+id/readClickView">
+        android:id="@+id/readClickView" android:layout_below="@+id/tvTitle">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:scrollbars="vertical"
