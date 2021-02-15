@@ -42,6 +42,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+
 // TODO: 2020/7/28 阅读历史列表 (本地)
 // TODO: 2020/7/28 养肥区域 
 // TODO: 2020/7/28 垃圾桶 
@@ -87,6 +88,11 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
             BookBean bookBean  = new BookBean();
             bookBean.name = "沧元图";
             bookBean.url = "41037/";
+            bookBean.hasAdd = true;
+            data.add(bookBean);
+            bookBean  = new BookBean();
+            bookBean.name = "宿主";
+            bookBean.url = "39803/";
             bookBean.hasAdd = true;
             data.add(bookBean);
             DBCenter.getInstance().insertBooks(data);
