@@ -20,18 +20,54 @@ public class BookBean implements Serializable {
     private static final long serialVersionUID = 0;
     @Transient
     public boolean hasAdd = false;
+    /**
+     * 小说名
+     */
     public String name="";
+    /**
+     * 小说作者
+     */
     public String author="";
+    /**
+     * 小说详情Path
+     */
     @Id
     public String url="";
+    /**
+     * 封面图
+     */
     public String cover="";
+    /**
+     * 最后阅读章节名称
+     */
     public String lastChapter="";
+    /**
+     * 最后阅读章节Path
+     */
     public String lastChapterUrl="";
+    /**
+     * 最后阅读章节进度
+     */
     public int lastChapterProgress=0;
+    /**
+     * 最新章节名称
+     */
     public String newChapter="";
+    /**
+     * 最新章节更新时间
+     */
     public String newTime="";
+    /**
+     * 最新章节更新显示时间
+     */
     public String newShowTime="";
+    /**
+     * 简介
+     */
     public String desc="";
+    /**
+     * 点击事件
+     */
     public long chickTime=0;
 
 

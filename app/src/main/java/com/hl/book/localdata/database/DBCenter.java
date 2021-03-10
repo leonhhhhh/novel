@@ -1,6 +1,8 @@
 package com.hl.book.localdata.database;
 
+import com.hl.book.dao.ChapterBeanDao;
 import com.hl.book.model.bean.BookBean;
+import com.hl.book.model.bean.ChapterBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +23,21 @@ public class DBCenter {
     }
 
     /**
-     * 查询会话列表
-     * @return  会话列表
+     * 查询章节列表
+     * */
+    public List<ChapterBean> getChapterListByBook(String bookId){
+        return dbHelper.getChapterDao().queryBuilder().where(ChapterBeanDao.Properties.BookId.eq(bookId)).list();
+    }
+
+    /**
+     * 插入章节列表
+     */
+    public void insertChapters(ArrayList<ChapterBean> chapterBeans){
+        if (chapterBeans==null)return;
+        dbHelper.getChapterDao().insertOrReplaceInTx(chapterBeans);
+    }
+    /**
+     * 查询书架列表
      * */
     public List<BookBean> getBooks(){
         return dbHelper.getBookDao().loadAll();

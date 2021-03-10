@@ -53,7 +53,7 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull final ReadAdapter.MyViewHolder holder, int position) {
-        holder.tvContent.setText(Html.fromHtml(chapterBeanList.get(position).content));
+        holder.tvContent.setText(Html.fromHtml(chapterBeanList.get(position).textBean.content));
         holder.tvContent.setTextSize(TypedValue.COMPLEX_UNIT_DIP,textSize);
         if (isNight){
             holder.tvContent.setTextColor(getColor(holder,R.color.color_eaedf2));

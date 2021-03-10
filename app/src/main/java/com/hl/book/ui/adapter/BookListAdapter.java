@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
+import com.hl.book.listener.OnItemLongListener;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.util.image.ImageLoadUtil;
 import com.hl.book.util.image.ImageOptionsFactory;
@@ -19,7 +20,8 @@ import java.util.ArrayList;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder>{
     private ArrayList<BookBean> chapterList;
-    private OnItemClickListener onItemClickListener;
+    private View.OnClickListener onItemClickListener;
+    private View.OnLongClickListener onItemLongListener;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
         TextView tvName;
@@ -35,9 +37,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
             viewPoint = v.findViewById(R.id.viewPoint);
         }
     }
-    public BookListAdapter(ArrayList<BookBean> chapterList, OnItemClickListener onItemClickListener) {
+    public BookListAdapter(ArrayList<BookBean> chapterList, View.OnClickListener onItemClickListener,
+                           View.OnLongClickListener onItemLongListener) {
         this.chapterList = chapterList;
         this.onItemClickListener = onItemClickListener;
+        this.onItemLongListener = onItemLongListener;
     }
 
     @NonNull
@@ -46,7 +50,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
                                                            int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.book_item, parent, false);
-        return new MyViewHolder(v);
+        MyViewHolder holder = new MyViewHolder(v);
+        holder.itemView.setTag(holder.getAdapterPosition());
+        holder.itemView.setOnClickListener(onItemClickListener);
+        holder.itemView.setOnLongClickListener(onItemLongListener);
+        return holder;
     }
 
     @Override
@@ -57,14 +65,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
         holder.tvName.setText(bookBean.name);
         holder.tvNew.setText(MessageFormat.format("{0}:{1}", bookBean.newShowTime, bookBean.newChapter));
         holder.ivMore.setTag(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener!=null){
-                    onItemClickListener.onItemClick(view,holder.getAdapterPosition());
-                }
-            }
-        });
+
         if (bookBean.isShowChickPoint()){
             holder.viewPoint.setVisibility(View.VISIBLE);
         }else {

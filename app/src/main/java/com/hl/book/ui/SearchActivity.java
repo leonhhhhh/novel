@@ -38,10 +38,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2020/7/13 搜索结果有多页的情况未处理
-// TODO: 2020/7/14  搜索结果与已加入的书籍进行匹配 初始化是否加入书架
-// TODO: 2020/7/28 热门搜索 
-// TODO: 2020/7/28 搜索历史  清空功能
+// TODO: 2021/2/15 搜索历史 
+// TODO: 2021/2/15 分页功能
 public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
     private ArrayList<BookBean> data;
     private RecyclerView.Adapter adapter;

@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hl.book.dao.BookBeanDao;
+import com.hl.book.dao.ChapterBeanDao;
 import com.hl.book.dao.DaoMaster;
 import com.hl.book.dao.DaoSession;
+import com.hl.book.dao.TextBeanDao;
 import com.orhanobut.logger.Logger;
 
 
@@ -15,6 +17,8 @@ public class DBHelper {
     private static DBHelper instance;
 
     private BookBeanDao bookDao;
+    private ChapterBeanDao chapterDao;
+    private TextBeanDao textDao;
     private Context context;
     private DaoSession daoSession;
 
@@ -34,6 +38,8 @@ public class DBHelper {
     private void initGitlabDB(String dbName) {
         daoSession = createSession(context, dbName);
         bookDao = daoSession.getBookBeanDao();
+        chapterDao = daoSession.getChapterBeanDao();
+        textDao = daoSession.getTextBeanDao();
     }
 
     private DaoSession createSession(Context context, String dbName) {
@@ -49,6 +55,18 @@ public class DBHelper {
             Logger.e("数据库未初始化");
         }
         return bookDao;
+    }
+    public ChapterBeanDao getChapterDao() {
+        if (chapterDao == null) {
+            Logger.e("数据库未初始化");
+        }
+        return chapterDao;
+    }
+    public TextBeanDao getTextDao() {
+        if (textDao == null) {
+            Logger.e("数据库未初始化");
+        }
+        return textDao;
     }
 
     public void clear() {

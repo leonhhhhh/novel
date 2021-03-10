@@ -14,7 +14,6 @@ import android.view.View;
 import com.hl.book.R;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
-import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
 import com.hl.book.localdata.database.DBCenter;
@@ -43,15 +42,11 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
-// TODO: 2020/7/28 阅读历史列表 (本地)
-// TODO: 2020/7/28 养肥区域 
-// TODO: 2020/7/28 垃圾桶 
-// TODO: 2020/7/28 书籍展示:列表和宫格切换
-// TODO: 2020/7/28 长按多选设置:删除 养肥 垃圾桶
-public class BookListActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<BookBean> data;
-    private RecyclerView.Adapter adapter;
+    private BookListAdapter adapter;
     private SwipeRefreshLayout swipeLayout;
+    private RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +59,10 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         data = new ArrayList<>();
         swipeLayout = findViewById(R.id.swipeRefreshLayout);
         swipeLayout.setOnRefreshListener(this);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
+        recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new BookListAdapter(data, this);
+        adapter = new BookListAdapter(data, new OnItemClickListener(),new OnItemLongClickListener());
         recyclerView.setAdapter(adapter);
     }
 
@@ -85,22 +79,10 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     private void iniData() {
         boolean isFirst = AppSharedper.getInstance(this).getBoolean(AppSharedperKeys.IsFirstIn, true);
         if (isFirst) {
-            BookBean bookBean  = new BookBean();
-            bookBean.name = "沧元图";
-            bookBean.url = "41037/";
-            bookBean.hasAdd = true;
-            data.add(bookBean);
-            bookBean  = new BookBean();
-            bookBean.name = "宿主";
-            bookBean.url = "39803/";
-            bookBean.hasAdd = true;
-            data.add(bookBean);
-            DBCenter.getInstance().insertBooks(data);
             AppSharedper.getInstance(this).putBoolean(AppSharedperKeys.IsFirstIn, false);
-        } else {
-            data.clear();
-            data.addAll(DBCenter.getInstance().getBooks());
         }
+        data.clear();
+        data.addAll(DBCenter.getInstance().getBooks());
     }
 
     @Override
@@ -173,16 +155,6 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
         }
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        BookBean bookBean = data.get(position);
-        bookBean.chick();
-        DBCenter.getInstance().updateBook(bookBean);
-        adapter.notifyDataSetChanged();
-        ActivitySkipUtil.skipAct(this, ChapterListActivity.class
-                , "book", bookBean);
-    }
-
     public void onItemSettingListener(View view) {
         final int index = (int) view.getTag();
         final BookBean bookBean = data.get(index);
@@ -209,4 +181,51 @@ public class BookListActivity extends AppCompatActivity implements OnItemClickLi
     public void onRefresh() {
         loadData();
     }
+
+    // TODO: 2021/2/15 点击阅读
+    class OnItemClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            RecyclerView.ViewHolder vh = recyclerView.getChildViewHolder(v);
+            int position = vh.getAdapterPosition();
+            if (position<0 || position>=data.size()) {
+                return;
+            }
+            BookBean bookBean = data.get(position);
+            ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+                    , "book", bookBean);
+
+//            String lastChapter = bookBean.lastChapter;
+//            if (lastChapter.equals("")){
+//                return;
+//            }
+
+//            for (int i = 0; i < data.size(); i++) {
+//                if (data.get(i).title.equals(lastChapter)){
+//                    recyclerView.scrollToPosition(i);
+//                    adapter.setLastIndex(i);
+//                    adapter.notifyDataSetChanged();
+//                    break;
+//                }
+//            }
+        }
+    }
+    class OnItemLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View v) {
+            int position = (int) v.getTag();
+            if (position<0 || position>=data.size()) {
+                return true;
+            }
+            BookBean bookBean = data.get(position);
+            bookBean.chick();
+            DBCenter.getInstance().updateBook(bookBean);
+            adapter.notifyDataSetChanged();
+            ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+                    , "book", bookBean);
+            return true;
+        }
+    }
+
 }
