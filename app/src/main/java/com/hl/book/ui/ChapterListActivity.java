@@ -42,6 +42,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * 小说详情界面  包含章节列表
+ */
+// TODO: 2021/3/17 增加小说详情介绍头部
 // TODO: 2020/7/14 章节下载
 public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
@@ -94,7 +98,8 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
                 connect.header("User-Agent", Config.UserAgent);
                 try {
                     Document document = connect.get();
-                    emitter.onNext(document);
+                    doBook(document);
+//                    emitter.onNext(document);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -107,7 +112,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
             }
             @Override
             public void onNext(Object value) {
-                doBook((Document) value);
+
             }
 
             @Override

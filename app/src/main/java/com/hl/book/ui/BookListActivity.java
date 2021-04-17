@@ -42,6 +42,9 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
+/**
+ * 小说列表 界面
+ */
 public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private ArrayList<BookBean> data;
     private BookListAdapter adapter;
