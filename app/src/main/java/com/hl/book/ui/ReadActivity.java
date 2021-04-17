@@ -77,7 +77,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         tvTitle.setText(chapterBean.title);
         llyBottom = findViewById(R.id.llySetting);
         tvFontSize = findViewById(R.id.tvFontSize);
-        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 12);
+        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 14);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         iniListener();
         data = new ArrayList<>();

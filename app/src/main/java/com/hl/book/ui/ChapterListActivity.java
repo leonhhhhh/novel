@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,14 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
-import com.hl.book.localdata.database.DBCenter;
-import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.localdata.AppSharedper;
+import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.util.ActivitySkipUtil;
 
 import org.jsoup.Connection;
@@ -32,7 +30,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -98,8 +95,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
                 connect.header("User-Agent", Config.UserAgent);
                 try {
                     Document document = connect.get();
-                    doBook(document);
-//                    emitter.onNext(document);
+                    emitter.onNext(document);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -112,7 +108,7 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
             }
             @Override
             public void onNext(Object value) {
-
+                doBook((Document) value);
             }
 
             @Override
