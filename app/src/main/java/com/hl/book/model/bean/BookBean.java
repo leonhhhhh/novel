@@ -1,6 +1,7 @@
 package com.hl.book.model.bean;
 
 import com.hl.book.util.DateUtil;
+import com.hl.book.util.StrUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -176,6 +177,9 @@ public class BookBean implements Serializable {
         chickTime = System.currentTimeMillis();
     }
     public boolean isShowChickPoint(){
+        if (StrUtil.isEmpty(newTime)){
+            return false;
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
         Date date = null;
         try {

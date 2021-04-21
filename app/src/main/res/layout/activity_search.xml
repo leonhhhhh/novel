@@ -18,7 +18,8 @@
         <EditText android:id="@+id/etSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toStartOf="@+id/tvSearch"/>
+            android:layout_toStartOf="@+id/tvSearch"
+            android:hint="@string/search_input_search_str" tools:ignore="Autofill,TextFields" />
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

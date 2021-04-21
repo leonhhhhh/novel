@@ -12,31 +12,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
-import com.hl.book.base.BookResourceBaseUrl;
-import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.source.SourceManager;
+import com.hl.book.source.result.BookDetailResult;
+import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.util.ActivitySkipUtil;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -44,12 +37,13 @@ import io.reactivex.schedulers.Schedulers;
  */
 // TODO: 2021/3/17 增加小说详情介绍头部
 // TODO: 2020/7/14 章节下载
-public class ChapterListActivity extends AppCompatActivity implements OnItemClickListener {
+public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
     private TextView tvAdd;
     private BookBean bookBean;
     private ArrayList<ChapterBean> data;
+    private Source currentSource;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +54,9 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
             finish();
         }
         setTitle(bookBean.name);
+        SourceManager sourceManager = SourceManager.getInstance();
+        currentSource = sourceManager.getSourceByLink(bookBean.url);
+
         recyclerView = findViewById(R.id.recyclerView);
         tvAdd = findViewById(R.id.tvAdd);
         if (bookBean.hasAdd){
@@ -87,59 +84,36 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void startGetData(){
-        Observable.create(new ObservableOnSubscribe<Object>() {
-            @Override
-            public void subscribe(ObservableEmitter<Object> emitter) {
-                String url = BookResourceBaseUrl.biquge.BookUrl+ bookBean.url;
-                Connection connect = Jsoup.connect(url);
-                connect.header("User-Agent", Config.UserAgent);
-                try {
-                    Document document = connect.get();
-                    emitter.onNext(document);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).subscribeOn(Schedulers.io())
+        Single.just(bookBean.url)
+                .map(new Function<String, BookDetailResult>() {
+                    @Override
+                    public BookDetailResult apply(String url) {
+                        return (BookDetailResult) currentSource.parseBookDetail(url);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Object>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-            @Override
-            public void onNext(Object value) {
-                doBook((Document) value);
-            }
+                .subscribe(new SingleObserver<BookDetailResult>() {
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            @Override
-            public void onComplete() {
-            }
-        });
-    }
-    private void doBook(Document document){
-        if (document==null)return;
-        Element body = document.body();
-        Elements links = body.getElementById("list").getElementsByTag("a");
-        boolean needRef = data.size() != links.size();
-        for (int i = data.size(); i < links.size(); i++) {
-            Element link = links.get(i);
-            ChapterBean chapterBean = new ChapterBean();
-            chapterBean.bookId = bookBean.url;
-            chapterBean.url = link.attr("href");
-            chapterBean.title = link.text();
-            data.add(chapterBean);
-        }
+                    }
 
-        if (needRef){
-            adapter.notifyDataSetChanged();
-        }
-        DBCenter.getInstance().insertChapters(data);
-        scrollLastRead();
+                    @Override
+                    public void onSuccess(BookDetailResult o) {
+                        data.clear();
+                        data.addAll(o.data);
+                        adapter.notifyDataSetChanged();
+                        DBCenter.getInstance().insertChapters(data);
+                        scrollLastRead();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
     private void scrollLastRead(){
         String lastChapter = bookBean.lastChapter;
@@ -163,13 +137,9 @@ public class ChapterListActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionMore:
-                Collections.reverse(data);
-                adapter.notifyDataSetChanged();
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.actionMore) {
+            Collections.reverse(data);
+            adapter.notifyDataSetChanged();
         }
         return true;
     }

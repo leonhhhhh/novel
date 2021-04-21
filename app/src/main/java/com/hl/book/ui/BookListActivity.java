@@ -12,12 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.hl.book.R;
-import com.hl.book.base.BookResourceBaseUrl;
-import com.hl.book.base.Config;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
+import com.hl.book.source.SourceManager;
+import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.BookListAdapter;
 import com.hl.book.ui.dialog.BookListBottomDialog;
 import com.hl.book.ui.dialog.base.DialogMessage;
@@ -26,12 +26,6 @@ import com.hl.book.util.ActivitySkipUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -46,15 +40,19 @@ import io.reactivex.schedulers.Schedulers;
  * 小说列表 界面
  */
 public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = "BookListActivity";
     private ArrayList<BookBean> data;
     private BookListAdapter adapter;
     private SwipeRefreshLayout swipeLayout;
     private RecyclerView recyclerView;
+    private SourceManager sourceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.addLogAdapter(new AndroidLogAdapter());
         setContentView(R.layout.activity_book_list);
+        sourceManager = SourceManager.getInstance();
         iniView();
     }
 
@@ -96,12 +94,8 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionMore:
-                ActivitySkipUtil.skipAct(BookListActivity.this,SearchActivity.class);
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.actionMore) {
+            ActivitySkipUtil.skipAct(BookListActivity.this, SearchActivity.class);
         }
         return true;
     }
@@ -114,7 +108,8 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                     @Override
                     public Object apply(BookBean bookBean) {
                         bookBean.hasAdd = true;
-                        doBooks(bookBean);
+                        Source source = sourceManager.getSourceByLink(bookBean.url);
+                        source.parseBook(bookBean);
                         return bookBean;
                     }
                 })
@@ -141,22 +136,6 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                     }
                 });
     }
-    private void doBooks(BookBean bookBean) {
-        String fullUrl = BookResourceBaseUrl.biquge.BookUrl + bookBean.url;
-        Connection connect = Jsoup.connect(fullUrl);
-        connect.header("User-Agent", Config.UserAgent);
-        try {
-            Document document = connect.get();
-            Element body = document.body();
-            bookBean.cover = body.getElementById("fmimg").getElementsByTag("img").attr("src");
-            Element info = document.body().getElementById("info");
-            bookBean.author = info.getElementsByTag("p").get(0).text().substring(2);
-            bookBean.setNewTime(info.getElementsByTag("p").get(2).text().replace("最后更新：",""));
-            bookBean.newChapter = info.getElementsByTag("p").get(3).getElementsByTag("a").text();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void onItemSettingListener(View view) {
         final int index = (int) view.getTag();
@@ -173,7 +152,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                     data.remove(index);
                     adapter.notifyDataSetChanged();
                 }else {
-                    ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+                    ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
                             , "book", bookBean);
                 }
             }
@@ -196,7 +175,10 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                 return;
             }
             BookBean bookBean = data.get(position);
-            ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+            bookBean.chick();
+            DBCenter.getInstance().updateBook(bookBean);
+            adapter.notifyDataSetChanged();
+            ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
                     , "book", bookBean);
 
 //            String lastChapter = bookBean.lastChapter;
@@ -225,7 +207,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
             bookBean.chick();
             DBCenter.getInstance().updateBook(bookBean);
             adapter.notifyDataSetChanged();
-            ActivitySkipUtil.skipAct(BookListActivity.this, ChapterListActivity.class
+            ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
                     , "book", bookBean);
             return true;
         }

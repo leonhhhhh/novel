@@ -13,32 +13,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
-import com.hl.book.base.BookResourceBaseUrl;
-import com.hl.book.base.Config;
 import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.source.SourceManager;
+import com.hl.book.source.result.ContentResult;
+import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.ui.view.ReadClickView;
 import com.orhanobut.logger.Logger;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2021/2/15 缓存小说
@@ -52,6 +46,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     private TextView tvFontSize;
     private View llyBottom;
     private boolean needScrollLastProcess = false;
+    private Source currentSource;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +58,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
             Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
             finish();
         }
+        SourceManager sourceManager = SourceManager.getInstance();
+        currentSource = sourceManager.getSourceByLink(bookBean.url);
+
         if (bookBean.lastChapterUrl.equals(chapterBean.url) && bookBean.lastChapterProgress>0){
             needScrollLastProcess = true;
         }
@@ -139,83 +137,49 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     private boolean isLoading = false;
 
-    private void startGetContent(String url) {
+    private void startGetContent(final String url) {
         if (isLoading) {
             return;
         }
         isLoading = true;
-        final String fullUrl = BookResourceBaseUrl.biquge.ChapterUrl + url;
-        Observable.create(new ObservableOnSubscribe<Object>() {
-            @Override
-            public void subscribe(ObservableEmitter<Object> emitter) {
-                Connection connect = Jsoup.connect(fullUrl);
-                connect.header("User-Agent", Config.UserAgent);
-                try {
-                    Document document = connect.get();
-                    emitter.onNext(document);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    isLoading = false;
-                }
-            }
-        }).subscribeOn(Schedulers.io())
+        Single.just(url)
+                .map(new Function<String, ContentResult>() {
+                    @Override
+                    public ContentResult apply(String url) {
+                        return (ContentResult) currentSource.parseContent(url);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Object>() {
+                .subscribe(new SingleObserver<ContentResult>() {
+
                     @Override
                     public void onSubscribe(Disposable d) {
+
                     }
 
                     @Override
-                    public void onNext(Object value) {
-                        doContent((Document) value);
+                    public void onSuccess(ContentResult o) {
+                        data.add(o.data);
+                        adapter.notifyDataSetChanged();
+                        if (needScrollLastProcess){
+                            recyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recyclerView.scrollBy(0, bookBean.lastChapterProgress);
+                                }
+                            });
+                            needScrollLastProcess = false;
+                        }
+                        // TODO: 2020/7/9 如果当前已经看了很多  则需要把前面的回收掉
+                        isLoading = false;
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-
-                });
-    }
-
-    private void doContent(Document document) {
-        if (document == null) {
-            isLoading = false;
-            return;
-        }
-        Element body = document.body();
-        ChapterBean chapterBean = new ChapterBean();
-        Element other = body.getElementsByClass("bookname").first();
-        if (other == null) {
-            chapterBean.title = "章节出错加载!!!!!!";
-        } else {
-            chapterBean.textBean.content = body.getElementById("content").html();
-            chapterBean.title = other.getElementsByTag("h1").text();
-            chapterBean.nextUrl = other.getElementsByClass("bottem1").first().
-                    getElementsByTag("a").get(2).attr("href");
-            if (data.size()==0){
-                chapterBean.url = this.chapterBean.url;
-            }else {
-                chapterBean.url = data.get(data.size()-1).nextUrl;
-            }
-            data.add(chapterBean);
-            adapter.notifyDataSetChanged();
-            if (needScrollLastProcess){
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollBy(0, bookBean.lastChapterProgress);
+                        isLoading = false;
                     }
                 });
-                needScrollLastProcess = false;
-            }
-            // TODO: 2020/7/9 如果当前已经看了很多  则需要把前面的回收掉
-        }
-        isLoading = false;
     }
 
     private void getNextChapter() {
@@ -248,16 +212,12 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionMore:
-                if (llyBottom.getVisibility() != View.VISIBLE) {
-                    llyBottom.setVisibility(View.VISIBLE);
-                } else {
-                    llyBottom.setVisibility(View.GONE);
-                }
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.actionMore) {
+            if (llyBottom.getVisibility() != View.VISIBLE) {
+                llyBottom.setVisibility(View.VISIBLE);
+            } else {
+                llyBottom.setVisibility(View.GONE);
+            }
         }
         return true;
     }

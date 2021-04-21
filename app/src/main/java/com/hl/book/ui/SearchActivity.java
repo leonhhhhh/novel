@@ -2,37 +2,32 @@ package com.hl.book.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
 import com.hl.book.R;
-import com.hl.book.localdata.database.DBCenter;
-import com.hl.book.ui.adapter.SearchAdapter;
-import com.hl.book.base.BookResourceBaseUrl;
-import com.hl.book.base.Config;
 import com.hl.book.listener.OnItemClickListener;
-import com.hl.book.localdata.AppSharedper;
+import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
+import com.hl.book.source.SourceManager;
+import com.hl.book.source.result.SearchResult;
+import com.hl.book.source.source.Source;
+import com.hl.book.ui.adapter.SearchAdapter;
 import com.hl.book.util.ActivitySkipUtil;
-import com.hl.book.util.net.JsonUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
@@ -41,15 +36,21 @@ import io.reactivex.schedulers.Schedulers;
 // TODO: 2021/2/15 搜索历史 
 // TODO: 2021/2/15 分页功能
 public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
+    private static final String TAG = "SearchActivity";
     private ArrayList<BookBean> data;
     private RecyclerView.Adapter adapter;
     private EditText etSearch;
+    private SourceManager sourceManager;
+    private Source currentSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.addLogAdapter(new AndroidLogAdapter());
         setContentView(R.layout.activity_search);
         data = new ArrayList<>();
+        sourceManager = SourceManager.getInstance();
+        currentSource = sourceManager.getDefaultSource();
         iniView();
     }
 
@@ -76,70 +77,39 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
 
     @SuppressLint("CheckResult")
     private void startGetData(final String search) {
-        Observable.just(search)
+        Single.just(search)
+            .map(new Function<String, SearchResult>() {
+                @Override
+                public SearchResult apply(String search) {
+                    return (SearchResult) currentSource.parseSearch(search);
+                }
+            })
             .subscribeOn(Schedulers.io())
-                .map(new Function<String, Object>() {
-                    @Override
-                    public Object apply(String search) {
-                        doBooks(search);
-                        return 0;
-                    }
-                })
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<Object>() {
+            .subscribe(new SingleObserver<SearchResult>() {
+
                 @Override
                 public void onSubscribe(Disposable d) {
+
                 }
 
                 @Override
-                public void onNext(Object value) {
-
+                public void onSuccess(SearchResult o) {
+                    data.addAll(o.data);
+                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
 
-                @Override
-                public void onComplete() {
-                    adapter.notifyDataSetChanged();
                 }
-
             });
-    }
-    private void doBooks(String search) {
-        String fullUrl = BookResourceBaseUrl.biquge.SearchUrl + search;
-        Connection connect = Jsoup.connect(fullUrl);
-        connect.header("User-Agent", Config.UserAgent);
-        try {
-            Document document = connect.get();
-            Element body = document.body();
-            Elements elements = body.getElementsByClass("result-item result-game-item");
-            data.clear();
-            for (Element e : elements) {
-                BookBean book = new BookBean();
-                book.cover = e.getElementsByTag("img").attr("src");
-                book.url = e.getElementsByClass("result-game-item-pic").get(0)
-                        .getElementsByTag("a").attr("href");
-                book.url = book.url.replace("/book/","");
-                book.name = e.getElementsByTag("h3").get(0).getElementsByTag("span").text();
-                book.desc = e.getElementsByClass("result-game-item-desc").text();
-                book.author = e.getElementsByClass("result-game-item-info-tag").get(0)
-                        .getElementsByTag("span").get(1).text();
-                book.newChapter = e.getElementsByClass("result-game-item-info-tag").get(3)
-                        .getElementsByTag("a").text();
-                data.add(book);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onItemClick(View view, int position) {
         BookBean bookBean = data.get(position);
-        ActivitySkipUtil.skipAct(this, ChapterListActivity.class
+        ActivitySkipUtil.skipAct(this, BookDetailActivity.class
                 , "bookBean", bookBean);
     }
 
@@ -158,5 +128,23 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
         }else {
             addBooks(book);
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_book_search, menu);
+        sourceManager.getSourceList();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionMore:
+                Toast.makeText(SearchActivity.this,"切换源",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }
