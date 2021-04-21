@@ -120,6 +120,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                 builder.append("\n当前item距离顶部高度:");
                 builder.append(currentView.getTop());
                 Logger.e(builder.toString());
+                cleanDataIfTooMuch(currentPosition);
                 getNextChapter();
             }
         });
@@ -194,7 +195,12 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         bookBean.lastChapterUrl = last.url;
         DBCenter.getInstance().updateBook(bookBean);
     }
+    private void cleanDataIfTooMuch(int currentPosition){
+        if (adapter.getItemCount()>15 && adapter.getItemCount()-currentPosition<3){
+            data.subList(0, 5).clear();
+        }
 
+    }
     public void onSettingListener(View view) {
         view.setSelected(!view.isSelected());
         if (view.isSelected()) {
