@@ -119,7 +119,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                 builder.append(recyclerView.computeVerticalScrollExtent());
                 builder.append("\n当前item距离顶部高度:");
                 builder.append(currentView.getTop());
-                Logger.e(builder.toString());
+//                Logger.e(builder.toString());
                 cleanDataIfTooMuch(currentPosition);
                 getNextChapter();
             }
@@ -188,7 +188,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                 recyclerView.computeVerticalScrollExtent() * 5) {
             return;
         }
-        Logger.i("缓存下一页!!!!");
+//        Logger.i("缓存下一页!!!!");
         ChapterBean last = data.get(data.size() - 1);
         startGetContent(last.nextUrl);
         bookBean.lastChapter = last.title;
@@ -198,6 +198,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     private void cleanDataIfTooMuch(int currentPosition){
         if (adapter.getItemCount()>15 && adapter.getItemCount()-currentPosition<3){
             data.subList(0, 5).clear();
+            adapter.notifyItemRangeRemoved(0,5);
         }
 
     }

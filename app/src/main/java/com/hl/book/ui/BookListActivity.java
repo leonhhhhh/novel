@@ -180,7 +180,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
             adapter.notifyDataSetChanged();
             ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
                     , "book", bookBean);
-
+            finish();
 //            String lastChapter = bookBean.lastChapter;
 //            if (lastChapter.equals("")){
 //                return;

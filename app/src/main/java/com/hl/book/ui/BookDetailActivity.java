@@ -148,6 +148,7 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
         ChapterBean chapterBean = data.get(position);
         ActivitySkipUtil.skipAct(this,ReadActivity.class
         ,"book", bookBean,"chapterBean",chapterBean);
+        finish();
     }
 
     public void onAddListener(View view) {
