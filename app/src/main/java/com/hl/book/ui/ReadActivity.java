@@ -23,7 +23,6 @@ import com.hl.book.source.result.ContentResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.ui.view.ReadClickView;
-import com.orhanobut.logger.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

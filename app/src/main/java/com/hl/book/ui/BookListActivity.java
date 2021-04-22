@@ -16,6 +16,7 @@ import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
+import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.source.SourceManager;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.BookListAdapter;
@@ -23,6 +24,7 @@ import com.hl.book.ui.dialog.BookListBottomDialog;
 import com.hl.book.ui.dialog.base.DialogMessage;
 import com.hl.book.ui.dialog.base.OnDialogListener;
 import com.hl.book.util.ActivitySkipUtil;
+import com.hl.book.util.StrUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -40,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
  * 小说列表 界面
  */
 public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = "BookListActivity";
+//    private static final String TAG = "BookListActivity";
     private ArrayList<BookBean> data;
     private BookListAdapter adapter;
     private SwipeRefreshLayout swipeLayout;
@@ -109,6 +111,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                     public Object apply(BookBean bookBean) {
                         bookBean.hasAdd = true;
                         Source source = sourceManager.getSourceByLink(bookBean.url);
+                        Logger.v("获取书籍信息:"+bookBean.toString());
                         source.parseBook(bookBean);
                         return bookBean;
                     }
@@ -164,7 +167,6 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
         loadData();
     }
 
-    // TODO: 2021/2/15 点击阅读
     class OnItemClickListener implements View.OnClickListener{
 
         @Override
@@ -178,24 +180,22 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
             bookBean.chick();
             DBCenter.getInstance().updateBook(bookBean);
             adapter.notifyDataSetChanged();
-            ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
-                    , "book", bookBean);
-            finish();
-//            String lastChapter = bookBean.lastChapter;
-//            if (lastChapter.equals("")){
-//                return;
-//            }
-
-//            for (int i = 0; i < data.size(); i++) {
-//                if (data.get(i).title.equals(lastChapter)){
-//                    recyclerView.scrollToPosition(i);
-//                    adapter.setLastIndex(i);
-//                    adapter.notifyDataSetChanged();
-//                    break;
-//                }
-//            }
+            if (StrUtil.isEmpty(bookBean.lastChapterUrl)){
+                ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
+                        , "book", bookBean);
+            }else {
+                ChapterBean chapterBean = new ChapterBean(bookBean.url
+                        ,bookBean.lastChapterUrl,bookBean.lastChapter,0);
+                ActivitySkipUtil.skipAct(BookListActivity.this,ReadActivity.class
+                        ,"book", bookBean,"chapterBean",chapterBean);
+            }
         }
     }
+
+    /**
+     *
+     * todo 长按与刷新控件冲突  待解决
+     */
     class OnItemLongClickListener implements View.OnLongClickListener{
         @Override
         public boolean onLongClick(View v) {

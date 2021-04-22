@@ -9,6 +9,7 @@ import com.hl.book.source.result.BookDetailResult;
 import com.hl.book.source.result.ContentResult;
 import com.hl.book.source.result.ParseResult;
 import com.hl.book.source.result.SearchResult;
+import com.hl.book.util.StrUtil;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -41,6 +42,13 @@ public class SourceBiQuGe extends Source {
             bookBean.author = info.getElementsByTag("p").get(0).text().substring(2);
             bookBean.setNewTime(info.getElementsByTag("p").get(2).text().replace("最后更新：",""));
             bookBean.newChapter = info.getElementsByTag("p").get(3).getElementsByTag("a").text();
+            if (StrUtil.isEmpty(bookBean.lastChapterUrl)){
+                Elements links = body.getElementById("list").getElementsByTag("a");
+                if (links != null && links.size() > 0){
+                    bookBean.lastChapterUrl = chapterUrl+links.get(0).attr("href");
+                    bookBean.lastChapter = links.get(0).text();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

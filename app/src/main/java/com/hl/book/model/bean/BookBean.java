@@ -1,5 +1,7 @@
 package com.hl.book.model.bean;
 
+import android.support.annotation.NonNull;
+
 import com.hl.book.util.DateUtil;
 import com.hl.book.util.StrUtil;
 
@@ -195,5 +197,14 @@ public class BookBean implements Serializable {
     }
     public void setLastChapterProgress(int lastChapterProgress) {
         this.lastChapterProgress = lastChapterProgress;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "BookBean{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                '}';
     }
 }
