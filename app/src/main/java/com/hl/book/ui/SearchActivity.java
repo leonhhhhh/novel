@@ -14,12 +14,14 @@ import android.widget.Toast;
 
 import com.hl.book.R;
 import com.hl.book.listener.OnItemClickListener;
+import com.hl.book.listener.SourceSelectListener;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.source.SourceManager;
 import com.hl.book.source.result.SearchResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.SearchAdapter;
+import com.hl.book.ui.dialog.base.ListDialog;
 import com.hl.book.util.ActivitySkipUtil;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -140,11 +142,28 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.actionMore:
-                Toast.makeText(SearchActivity.this,"切换源",Toast.LENGTH_SHORT).show();
+                showSourceList();
                 break;
             default:
                 break;
         }
         return true;
+    }
+    private void showSourceList(){
+        ListDialog dialog = new ListDialog(SearchActivity.this);
+        dialog.setData(currentSource,new SourceSelectListener() {
+            @Override
+            public void onSourceSelect(Source source) {
+                selectSource(source);
+            }
+        });
+        dialog.show();
+    }
+    private void selectSource(Source source){
+        Toast.makeText(SearchActivity.this,"选择了:"+source.name,Toast.LENGTH_SHORT).show();
+        if (source.name.equals(currentSource.name)){
+            return;
+        }
+        currentSource = source;
     }
 }
