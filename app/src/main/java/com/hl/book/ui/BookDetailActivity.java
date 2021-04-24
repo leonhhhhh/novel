@@ -35,6 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * 小说详情界面  包含章节列表
  */
+// TODO: 2021/4/22 换源:更新Book表(进度信息重置),插入新的章节记录
+    // TODO: 2021/4/22  换源后进度是否可以智能匹配探索
 // TODO: 2021/3/17 增加小说详情介绍头部
 // TODO: 2020/7/14 章节下载
 public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener {
@@ -88,7 +90,9 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
                 .map(new Function<String, BookDetailResult>() {
                     @Override
                     public BookDetailResult apply(String url) {
-                        return (BookDetailResult) currentSource.parseBookDetail(url);
+                        BookDetailResult result = (BookDetailResult) currentSource.parseBookDetail(url);
+                        DBCenter.getInstance().insertChapters(result.data);
+                        return result;
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -105,7 +109,6 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
                         data.clear();
                         data.addAll(o.data);
                         adapter.notifyDataSetChanged();
-                        DBCenter.getInstance().insertChapters(data);
                         scrollLastRead();
                     }
 

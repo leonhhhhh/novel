@@ -41,6 +41,8 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * 小说列表 界面
  */
+// TODO: 2021/4/22 获取Book详情时 将书籍属性和章节列表都入库 在书籍详情页即可不用再请求了,除非搜索过去或者主动刷新
+
 public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 //    private static final String TAG = "BookListActivity";
     private ArrayList<BookBean> data;
@@ -180,15 +182,17 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
             bookBean.chick();
             DBCenter.getInstance().updateBook(bookBean);
             adapter.notifyDataSetChanged();
-            if (StrUtil.isEmpty(bookBean.lastChapterUrl)){
-                ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
-                        , "book", bookBean);
-            }else {
-                ChapterBean chapterBean = new ChapterBean(bookBean.url
-                        ,bookBean.lastChapterUrl,bookBean.lastChapter,0);
-                ActivitySkipUtil.skipAct(BookListActivity.this,ReadActivity.class
-                        ,"book", bookBean,"chapterBean",chapterBean);
+
+            if (!StrUtil.isEmpty(bookBean.lastChapterUrl)){
+                ChapterBean chapterBean = DBCenter.getInstance().getChapterByChapterUrl(bookBean.lastChapterUrl);
+                if (chapterBean!=null){
+                    ActivitySkipUtil.skipAct(BookListActivity.this,ReadActivity.class
+                            ,"book", bookBean,"chapterBean",chapterBean);
+                    return;
+                }
             }
+            ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
+                    , "book", bookBean);
         }
     }
 

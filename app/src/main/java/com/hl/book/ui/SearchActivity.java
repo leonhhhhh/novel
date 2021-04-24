@@ -35,12 +35,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2021/2/15 搜索历史 
+// TODO: 2021/4/22 换源功能:换源后刷新当前搜索结果为新源搜索第一页
 // TODO: 2021/2/15 分页功能
+// TODO: 2021/4/22 加入移除状态添加
+// TODO: 2021/2/15 搜索历史
 public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
-    private static final String TAG = "SearchActivity";
+//    private static final String TAG = "SearchActivity";
     private ArrayList<BookBean> data;
-    private RecyclerView.Adapter adapter;
+    private SearchAdapter adapter;
     private EditText etSearch;
     private SourceManager sourceManager;
     private Source currentSource;
@@ -140,12 +142,8 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionMore:
-                showSourceList();
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.actionMore) {
+            showSourceList();
         }
         return true;
     }

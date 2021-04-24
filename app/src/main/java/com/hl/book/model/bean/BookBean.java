@@ -28,11 +28,11 @@ public class BookBean implements Serializable {
      */
     public String name="";
     /**
-     * 小说作者
+     * 作者
      */
     public String author="";
     /**
-     * 小说详情Path
+     * 小说详情完整链接
      */
     @Id
     public String url="";

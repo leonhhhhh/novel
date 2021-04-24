@@ -1,6 +1,5 @@
 package com.hl.book.source.source;
 
-import com.hl.book.base.BookResourceBaseUrl;
 import com.hl.book.base.Config;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
@@ -71,6 +70,7 @@ public class SourceBiQuGe extends Source {
                 chapterBean.bookId = url;
                 chapterBean.url = chapterUrl+link.attr("href");
                 chapterBean.title = link.text();
+                chapterBean.index = i;
                 data.add(chapterBean);
             }
             result.data = data;
@@ -81,13 +81,12 @@ public class SourceBiQuGe extends Source {
     }
 
     @Override
-    public ContentResult parseContent(String url) {
+    public ContentResult parseContent(ChapterBean chapterBean) {
         ContentResult result = new ContentResult();
-        Connection connect = Jsoup.connect(url);
+        Connection connect = Jsoup.connect(chapterBean.url);
         connect.header("User-Agent", Config.UserAgent);
         try {
             Document document = connect.get();
-            ChapterBean chapterBean = new ChapterBean();
             result.data = chapterBean;
             if (document == null) {
                 return result;
@@ -95,14 +94,10 @@ public class SourceBiQuGe extends Source {
             Element body = document.body();
             Element other = body.getElementsByClass("bookname").first();
             if (other == null) {
-                chapterBean.title = "章节出错加载!!!!!!";
+                chapterBean.textBean.content = "章节加载出错";
                 return result;
             }
             chapterBean.textBean.content = body.getElementById("content").html();
-            chapterBean.title = other.getElementsByTag("h1").text();
-            chapterBean.nextUrl = chapterUrl+other.getElementsByClass("bottem1").first().
-                    getElementsByTag("a").get(2).attr("href");
-            chapterBean.url = url;
         } catch (IOException e) {
             e.printStackTrace();
         }

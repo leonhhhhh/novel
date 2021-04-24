@@ -13,12 +13,12 @@ public class ChapterBean implements Serializable {
     @Transient
     private static final long serialVersionUID = 1;
     /**
-     * 所属小说的Path(在每个小说网站应该是非重的)
+     * 所属小说的完整链接(在每个小说网站应该是非重的)
      */
     @Property(nameInDb = "book_id")
     public String bookId="";
     /**
-     * 章节Path
+     * 章节完整路径
      */
     public String url="";
     /**
@@ -28,25 +28,25 @@ public class ChapterBean implements Serializable {
     /**
      *是否缓存
      */
-    @Property(nameInDb = "has_download")
-    public Integer hasDownload=0;
+    @Property(nameInDb = "has_downloaded")
+    public Integer hasDownloaded=0;
     /**
-     * 下一章Path
+     * 排序索引
      */
-    @Transient
-    public String nextUrl="";
+    public int index = 0;
     /**
      * 内容
      */
     @Transient
     public TextBean textBean = new TextBean();
-
-    @Generated(hash = 960325266)
-    public ChapterBean(String bookId, String url, String title, Integer hasDownload) {
+    @Generated(hash = 978858919)
+    public ChapterBean(String bookId, String url, String title, Integer hasDownloaded,
+            int index) {
         this.bookId = bookId;
         this.url = url;
         this.title = title;
-        this.hasDownload = hasDownload;
+        this.hasDownloaded = hasDownloaded;
+        this.index = index;
     }
     @Generated(hash = 1028095945)
     public ChapterBean() {
@@ -69,17 +69,17 @@ public class ChapterBean implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getNextUrl() {
-        return this.nextUrl;
+    public Integer getHasDownloaded() {
+        return this.hasDownloaded;
     }
-    public void setNextUrl(String nextUrl) {
-        this.nextUrl = nextUrl;
+    public void setHasDownloaded(Integer hasDownloaded) {
+        this.hasDownloaded = hasDownloaded;
     }
-    public Integer getHasDownload() {
-        return this.hasDownload;
+    public int getIndex() {
+        return this.index;
     }
-    public void setHasDownload(Integer hasDownload) {
-        this.hasDownload = hasDownload;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 

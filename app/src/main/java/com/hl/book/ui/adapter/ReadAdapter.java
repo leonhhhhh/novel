@@ -1,6 +1,5 @@
 package com.hl.book.ui.adapter;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -13,10 +12,10 @@ import android.widget.TextView;
 import com.hl.book.R;
 import com.hl.book.model.bean.ChapterBean;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
-    private ArrayList<ChapterBean> chapterBeanList;
+    private List<ChapterBean> chapterBeanList;
     private int  textSize=12;
     private boolean isNight = false;
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -28,7 +27,7 @@ public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
             tvContent = v.findViewById(R.id.tvContent);
         }
     }
-    public ReadAdapter(ArrayList<ChapterBean> chapterBeanList) {
+    public ReadAdapter(List<ChapterBean> chapterBeanList) {
         this.chapterBeanList = chapterBeanList;
     }
 

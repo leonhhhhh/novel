@@ -14,7 +14,7 @@ public class TextBean implements Serializable {
     @Transient
     private static final long serialVersionUID = 3333;
     /**
-     * 内容id(BookId_ChapterUrl)
+     * 内容id(章节完整路径)
      */
     @Property(nameInDb = "text_id")
     @Id

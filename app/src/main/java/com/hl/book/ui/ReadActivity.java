@@ -26,6 +26,7 @@ import com.hl.book.ui.view.ReadClickView;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -34,10 +35,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2021/2/15 缓存小说
+// TODO: 2021/2/15 下载小说
 public class ReadActivity extends AppCompatActivity implements ReadClickListener {
     private ReadAdapter adapter;
-    private ArrayList<ChapterBean> data;
+    private List<ChapterBean> data;
+    private List<ChapterBean> allChapterList;
     private RecyclerView recyclerView;
     private TextView tvTitle;
     private ChapterBean chapterBean;
@@ -78,6 +80,8 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         iniListener();
         data = new ArrayList<>();
+        allChapterList = DBCenter.getInstance().getChapterListByBook(bookBean.url);
+
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -90,7 +94,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         } else {
             onNightListener(null);
         }
-        startGetContent(chapterBean.url);
+        startGetContent(chapterBean);
     }
     View currentView;
     StringBuilder builder = new StringBuilder();
@@ -137,16 +141,16 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
 
     private boolean isLoading = false;
 
-    private void startGetContent(final String url) {
+    private void startGetContent(ChapterBean chapterBean) {
         if (isLoading) {
             return;
         }
         isLoading = true;
-        Single.just(url)
-                .map(new Function<String, ContentResult>() {
+        Single.just(chapterBean)
+                .map(new Function<ChapterBean, ContentResult>() {
                     @Override
-                    public ContentResult apply(String url) {
-                        return (ContentResult) currentSource.parseContent(url);
+                    public ContentResult apply(ChapterBean chapterBean1) {
+                        return (ContentResult) currentSource.parseContent(chapterBean1);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -171,7 +175,6 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                             });
                             needScrollLastProcess = false;
                         }
-                        // TODO: 2020/7/9 如果当前已经看了很多  则需要把前面的回收掉
                         isLoading = false;
                     }
 
@@ -187,13 +190,21 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                 recyclerView.computeVerticalScrollExtent() * 5) {
             return;
         }
-//        Logger.i("缓存下一页!!!!");
-        ChapterBean last = data.get(data.size() - 1);
-        startGetContent(last.nextUrl);
-        bookBean.lastChapter = last.title;
-        bookBean.lastChapterUrl = last.url;
+        if (data.size() >= allChapterList.size()|| data.size()==0){
+            return;
+        }
+        //Logger.i("缓存下一页!!!!");
+        ChapterBean lastBean = data.get(data.size()-1);
+        ChapterBean next = allChapterList.get(lastBean.index+1);
+        startGetContent(next);
+        bookBean.lastChapter = next.title;
+        bookBean.lastChapterUrl = next.url;
         DBCenter.getInstance().updateBook(bookBean);
     }
+
+    /**
+     * @param currentPosition  看了超过15个  回收掉前面五个
+     */
     private void cleanDataIfTooMuch(int currentPosition){
         if (adapter.getItemCount()>15 && adapter.getItemCount()-currentPosition<3){
             data.subList(0, 5).clear();

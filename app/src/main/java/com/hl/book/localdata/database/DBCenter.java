@@ -32,9 +32,12 @@ public class DBCenter {
     /**
      * 插入章节列表
      */
-    public void insertChapters(ArrayList<ChapterBean> chapterBeans){
+    public void insertChapters(List<ChapterBean> chapterBeans){
         if (chapterBeans==null)return;
         dbHelper.getChapterDao().insertOrReplaceInTx(chapterBeans);
+    }
+    public ChapterBean getChapterByChapterUrl(String url){
+        return dbHelper.getChapterDao().queryBuilder().where(ChapterBeanDao.Properties.Url.eq(url)).unique();
     }
     /**
      * 查询书架列表
@@ -49,14 +52,26 @@ public class DBCenter {
         if (bookBeans==null)return;
         dbHelper.getBookDao().insertOrReplaceInTx(bookBeans);
     }
+
+    /**
+     * @param book 插入单个书籍
+     */
     public void insertBook(BookBean book){
         if (book==null)return;
         dbHelper.getBookDao().insertOrReplace(book);
     }
+
+    /**
+     * @param book 更新单个书籍
+     */
     public void updateBook(BookBean book){
         if (book==null)return;
         dbHelper.getBookDao().update(book);
     }
+
+    /**
+     * @param book 删除单个书籍
+     */
     public void delBook(BookBean book){
         if (book==null)return;
         dbHelper.getBookDao().delete(book);
