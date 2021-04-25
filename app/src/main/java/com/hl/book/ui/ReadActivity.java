@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,9 @@ import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.model.bean.TextBean;
 import com.hl.book.source.SourceManager;
+import com.hl.book.source.download.DownloadManager;
 import com.hl.book.source.result.ContentResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ReadAdapter;
@@ -37,6 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2021/2/15 下载小说
 public class ReadActivity extends AppCompatActivity implements ReadClickListener {
+    private static final String TAG = "ReadActivity";
     private ReadAdapter adapter;
     private List<ChapterBean> data;
     private List<ChapterBean> allChapterList;
@@ -76,7 +80,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         tvTitle.setText(chapterBean.title);
         llyBottom = findViewById(R.id.llySetting);
         tvFontSize = findViewById(R.id.tvFontSize);
-        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 14);
+        int fontSize = AppSharedper.getInstance(this).getInt("fontSize", 16);
         tvFontSize.setText(MessageFormat.format("{0}", fontSize));
         iniListener();
         data = new ArrayList<>();
@@ -94,7 +98,14 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         } else {
             onNightListener(null);
         }
-        startGetContent(chapterBean);
+        TextBean textBean = DBCenter.getInstance().getChapterContentByUrl(chapterBean.url);
+        if (textBean != null){
+            chapterBean.textBean = textBean;
+            data.add(chapterBean);
+            adapter.notifyDataSetChanged();
+        }else {
+            startGetContent(chapterBean);
+        }
     }
     View currentView;
     StringBuilder builder = new StringBuilder();
@@ -166,15 +177,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                     public void onSuccess(ContentResult o) {
                         data.add(o.data);
                         adapter.notifyDataSetChanged();
-                        if (needScrollLastProcess){
-                            recyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    recyclerView.scrollBy(0, bookBean.lastChapterProgress);
-                                }
-                            });
-                            needScrollLastProcess = false;
-                        }
+                        scrollLastProcess();
                         isLoading = false;
                     }
 
@@ -184,7 +187,17 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
                     }
                 });
     }
-
+    private void scrollLastProcess(){
+        if (needScrollLastProcess){
+            recyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.scrollBy(0, bookBean.lastChapterProgress);
+                }
+            });
+            needScrollLastProcess = false;
+        }
+    }
     private void getNextChapter() {
         if (recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollOffset() >
                 recyclerView.computeVerticalScrollExtent() * 5) {
@@ -196,7 +209,16 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         //Logger.i("缓存下一页!!!!");
         ChapterBean lastBean = data.get(data.size()-1);
         ChapterBean next = allChapterList.get(lastBean.index+1);
-        startGetContent(next);
+        TextBean textBean = DBCenter.getInstance().getChapterContentByUrl(next.url);
+        if (textBean == null){
+            startGetContent(next);
+        }else {
+            next.textBean = textBean;
+            next.title = next.title+"(本地缓存)";
+            data.add(next);
+            adapter.notifyDataSetChanged();
+            scrollLastProcess();
+        }
         bookBean.lastChapter = next.title;
         bookBean.lastChapterUrl = next.url;
         DBCenter.getInstance().updateBook(bookBean);
@@ -297,5 +319,42 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
     public void onBottomRightClick(View view) {
         recyclerView.scrollBy(0, recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollExtent() / 10);
         getNextChapter();
+    }
+
+    /**
+     * @param view 下载一部分(默认30章) 尝鲜版
+     */
+    public void onDownloadPartListener(View view) {
+        int MAX_COUNT = 30;
+        onDownloadAction(allChapterList.size());
+    }
+
+    /**
+     * @param view 下载全文
+     */
+    public void onDownloadListener(View view) {
+        onDownloadAction(allChapterList.size());
+    }
+    private void onDownloadAction(int maxCount){
+        if (data.size()<=0){
+            return;
+        }
+        int count = 0;
+        ChapterBean bean = data.get(data.size()-1);
+        for (int i = 0; i < allChapterList.size(); i++) {
+            if (count== maxCount){
+                break;
+            }
+            if (count>0){
+                Log.e(TAG,"添加下载:"+allChapterList.get(i).title);
+                DownloadManager.getInstance().download(allChapterList.get(i));
+                count++;
+                continue;
+            }
+            if (allChapterList.get(i).url.equals(bean.url)){
+                DownloadManager.getInstance().download(allChapterList.get(i));
+                count++;
+            }
+        }
     }
 }

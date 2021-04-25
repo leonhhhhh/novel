@@ -2,6 +2,7 @@ package com.hl.book.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +23,8 @@ import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.util.ActivitySkipUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -39,13 +40,14 @@ import io.reactivex.schedulers.Schedulers;
     // TODO: 2021/4/22  换源后进度是否可以智能匹配探索
 // TODO: 2021/3/17 增加小说详情介绍头部
 // TODO: 2020/7/14 章节下载
-public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener {
+public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
     private TextView tvAdd;
     private BookBean bookBean;
-    private ArrayList<ChapterBean> data;
+    private List<ChapterBean> data;
     private Source currentSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,8 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
         setTitle(bookBean.name);
         SourceManager sourceManager = SourceManager.getInstance();
         currentSource = sourceManager.getSourceByLink(bookBean.url);
-
+        SwipeRefreshLayout swipeLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeLayout.setOnRefreshListener(this);
         recyclerView = findViewById(R.id.recyclerView);
         tvAdd = findViewById(R.id.tvAdd);
         if (bookBean.hasAdd){
@@ -66,21 +69,21 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
         }else {
             tvAdd.setText("加入书架");
         }
-        data = new ArrayList<>();
-        data.addAll(DBCenter.getInstance().getChapterListByBook(bookBean.url));
+        data = DBCenter.getInstance().getChapterListByBook(bookBean.url);
+        if (data == null || data.size() == 0){
+            startGetData();
+        }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ChapterListAdapter(data,this);
         recyclerView.setAdapter(adapter);
-
-        startGetData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (data.size()>0){
-            bookBean = DBCenter.getInstance().getBook(bookBean.url);
+            bookBean = DBCenter.getInstance().getBookByUrl(bookBean.url);
             scrollLastRead();
         }
     }
@@ -171,5 +174,10 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
         ChapterBean chapterBean = data.get(adapter.getLastIndex());
         ActivitySkipUtil.skipAct(this,ReadActivity.class
                 ,"book", bookBean,"chapterBean",chapterBean);
+    }
+
+    @Override
+    public void onRefresh() {
+        startGetData();
     }
 }

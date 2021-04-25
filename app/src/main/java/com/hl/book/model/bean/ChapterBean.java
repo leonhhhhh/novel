@@ -1,6 +1,7 @@
 package com.hl.book.model.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Transient;
@@ -12,6 +13,10 @@ import org.greenrobot.greendao.annotation.Generated;
 public class ChapterBean implements Serializable {
     @Transient
     private static final long serialVersionUID = 1;
+    @Transient
+    public static final int DOWNLOADED = 1;
+    @Transient
+    public static final int NOT_DOWNLOADED = 0;
     /**
      * 所属小说的完整链接(在每个小说网站应该是非重的)
      */
@@ -20,6 +25,7 @@ public class ChapterBean implements Serializable {
     /**
      * 章节完整路径
      */
+    @Id
     public String url="";
     /**
      * 章节标题
@@ -29,7 +35,7 @@ public class ChapterBean implements Serializable {
      *是否缓存
      */
     @Property(nameInDb = "has_downloaded")
-    public Integer hasDownloaded=0;
+    public Integer hasDownloaded=NOT_DOWNLOADED;
     /**
      * 排序索引
      */

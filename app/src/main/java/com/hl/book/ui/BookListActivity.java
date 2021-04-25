@@ -188,6 +188,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                 if (chapterBean!=null){
                     ActivitySkipUtil.skipAct(BookListActivity.this,ReadActivity.class
                             ,"book", bookBean,"chapterBean",chapterBean);
+                    finish();
                     return;
                 }
             }

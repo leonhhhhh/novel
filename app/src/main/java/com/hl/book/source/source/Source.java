@@ -2,6 +2,7 @@ package com.hl.book.source.source;
 
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
+import com.hl.book.source.download.DownloadPackage;
 import com.hl.book.source.result.ParseResult;
 
 public abstract class Source {
@@ -13,5 +14,6 @@ public abstract class Source {
     public abstract BookBean parseBook(BookBean bookBean);
     public abstract ParseResult parseBookDetail(String url);
     public abstract ParseResult parseContent(ChapterBean chapterBean);
+    public abstract ParseResult parseContent(DownloadPackage downloadPackage);
     public abstract ParseResult parseSearch(String searchTxt);
 }

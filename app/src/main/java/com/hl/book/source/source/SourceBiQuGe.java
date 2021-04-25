@@ -1,9 +1,11 @@
 package com.hl.book.source.source;
 
 import com.hl.book.base.Config;
+import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.source.Url;
+import com.hl.book.source.download.DownloadPackage;
 import com.hl.book.source.result.BookDetailResult;
 import com.hl.book.source.result.ContentResult;
 import com.hl.book.source.result.ParseResult;
@@ -103,6 +105,12 @@ public class SourceBiQuGe extends Source {
         }
 
         return result;
+    }
+
+    @Override
+    public ParseResult parseContent(DownloadPackage downloadPackage) {
+        parseContent(downloadPackage.chapterBean);
+        return downloadPackage;
     }
 
     @Override

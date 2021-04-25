@@ -8,6 +8,33 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:contentPadding="0dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="10dp"
+        android:layout_margin="10dp">
+    <LinearLayout
+        android:layout_width="match_parent" android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" android:focusable="true"
+            android:onClick="onDownloadPartListener"
+            android:text="@string/read_download_part" style="@style/Base.Widget.AppCompat.Button"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" android:focusable="true"
+            android:onClick="onDownloadListener"
+            android:text="@string/read_download" style="@style/Base.Widget.AppCompat.Button"/>
+    </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:contentPadding="0dp"
         app:cardCornerRadius="5dp"
@@ -26,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true" android:focusable="true"
                     android:onClick="onFontSizeUpListener"
-                    android:text="字体大" style="@style/Base.Widget.AppCompat.Button"/>
+                    android:text="@string/read_fond_size_up" style="@style/Base.Widget.AppCompat.Button"/>
                 <TextView android:id="@+id/tvFontSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -39,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true" android:focusable="true"
                     android:onClick="onFontSizeDownListener"
-                    android:text="字体小" style="@style/Base.Widget.AppCompat.Button"/>
+                    android:text="@string/read_font_size_down" style="@style/Base.Widget.AppCompat.Button"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content" android:orientation="horizontal"
@@ -49,14 +76,14 @@
                     android:layout_height="wrap_content"
                     android:clickable="true" android:focusable="true"
                     android:onClick="onDayListener"
-                    android:text="白天" style="@style/Base.Widget.AppCompat.Button"/>
+                    android:text="@string/read_day" style="@style/Base.Widget.AppCompat.Button"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true" android:focusable="true"
                     android:onClick="onNightListener"
-                    android:text="晚上" style="@style/Base.Widget.AppCompat.Button"/>
+                    android:text="@string/read_night" style="@style/Base.Widget.AppCompat.Button"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

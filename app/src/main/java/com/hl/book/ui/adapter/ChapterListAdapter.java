@@ -13,9 +13,10 @@ import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.model.bean.ChapterBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.MyViewHolder>{
-    private ArrayList<ChapterBean> chapterBeanList;
+    private List<ChapterBean> chapterBeanList;
     private OnItemClickListener onItemClickListener;
     private int lastIndex = -1;
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -25,7 +26,7 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
             textView = v.findViewById(R.id.textView);
         }
     }
-    public ChapterListAdapter(ArrayList<ChapterBean> chapterBeanList, OnItemClickListener onItemClickListener) {
+    public ChapterListAdapter(List<ChapterBean> chapterBeanList, OnItemClickListener onItemClickListener) {
         this.chapterBeanList = chapterBeanList;
         this.onItemClickListener = onItemClickListener;
     }

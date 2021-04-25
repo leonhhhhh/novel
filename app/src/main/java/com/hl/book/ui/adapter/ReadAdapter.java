@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ReadAdapter extends RecyclerView.Adapter<ReadAdapter.MyViewHolder>{
     private List<ChapterBean> chapterBeanList;
-    private int  textSize=12;
+    private int  textSize=16;
     private boolean isNight = false;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;

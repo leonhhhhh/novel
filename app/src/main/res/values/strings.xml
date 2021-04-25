@@ -12,4 +12,10 @@
     <string name="detail">详情</string>
     <string name="cover">cover</string>
     <string name="search_input_search_str">请输入书名</string>
+    <string name="read_fond_size_up">字体大</string>
+    <string name="read_font_size_down">字体小</string>
+    <string name="read_day">白天</string>
+    <string name="read_night">晚上</string>
+    <string name="read_download_part">下载30章</string>
+    <string name="read_download">下载全文</string>
 </resources>
