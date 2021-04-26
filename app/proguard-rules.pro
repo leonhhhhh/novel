@@ -69,7 +69,7 @@
 # 保留我们使用的四大组件，自定义的Application等等这些类不被混淆
 # 因为这些子类都有可能被外部调用
 -keep public class * extends android.app.Activity
--keep public class * extends android.app.Appliction
+-keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
@@ -184,17 +184,17 @@
 
 #-----------处理实体类---------------
 # 在开发的时候我们可以将所有的实体类放在一个包内，这样我们写一次混淆就行了。
--keep class com.hl.bookBean.model.**{ *; }
+-keep class com.hl.book.model.bean.*{ *; }
 
 
 
 #-----------处理第三方依赖库---------
 # AndroidEventBus
--keep class org.simple.** { *; }
--keep interface org.simple.** { *; }
--keepclassmembers class * {
-    @org.simple.eventbus.Subscriber <methods>;
-}
+#-keep class org.simple.** { *; }
+#-keep interface org.simple.** { *; }
+#-keepclassmembers class * {
+#    @org.simple.eventbus.Subscriber <methods>;
+#}
 ## EventBus
 #-keepclassmembers class ** { @org.greenrobot.eventbus.Subscribe <methods>; }
 #-keep enum org.greenrobot.eventbus.ThreadMode { *; }
@@ -204,11 +204,10 @@
 # Gson
 -keepattributes Signature
 -keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.stream.** { *; }
+#-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.*{ *; }
 # 使用Gson时需要配置Gson的解析对象及变量都不混淆。不然Gson会找不到变量。
-# 将下面替换成自己的实体类
-#-keep class com.example.bean.** { *; }
+
 #okhttp
 -dontwarn okhttp3.**
 -keep class okhttp3.**{*;}
@@ -230,7 +229,7 @@
 
 #gson && protobuf
 -dontwarn com.google.**
--keep class com.google.gson.** {*;}
+-keep class com.google.gson.**{*;}
 -keep class com.google.protobuf.** {*;}
 ## RxJava RxAndroid
 #-dontwarn sun.misc.**
@@ -244,3 +243,6 @@
 #-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
 #    rx.internal.util.atomic.LinkedQueueNode consumerNode;
 #}
+-keep class com.hl.book.source.Url
+-keep class com.hl.book.source.SourceManager
+-keep class com.hl.book.source.source.*
