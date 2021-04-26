@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.hl.book.localdata.database.DBHelper;
+import com.hl.book.util.crash.Fire;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class BookApp extends Application {
     }
     private void init() {
         iniDB();
+        Fire.init(this);
+
     }
     public static BookApp getInstance() {
         return mApplication;
