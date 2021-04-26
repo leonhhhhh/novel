@@ -208,6 +208,9 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
         }
         //Logger.i("缓存下一页!!!!");
         ChapterBean lastBean = data.get(data.size()-1);
+        if (lastBean.index+1>=allChapterList.size()){
+            return;
+        }
         ChapterBean next = allChapterList.get(lastBean.index+1);
         TextBean textBean = DBCenter.getInstance().getChapterContentByUrl(next.url);
         if (textBean == null){
@@ -326,7 +329,7 @@ public class ReadActivity extends AppCompatActivity implements ReadClickListener
      */
     public void onDownloadPartListener(View view) {
         int MAX_COUNT = 30;
-        onDownloadAction(allChapterList.size());
+        onDownloadAction(MAX_COUNT);
     }
 
     /**

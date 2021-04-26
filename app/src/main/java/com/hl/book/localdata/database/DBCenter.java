@@ -42,7 +42,8 @@ public class DBCenter {
      * 查询章节列表
      * */
     public List<ChapterBean> getChapterListByBook(String bookId){
-        return dbHelper.getChapterDao().queryBuilder().where(ChapterBeanDao.Properties.BookId.eq(bookId)).list();
+        return dbHelper.getChapterDao().queryBuilder().orderAsc(ChapterBeanDao.Properties.Index).
+                where(ChapterBeanDao.Properties.BookId.eq(bookId)).list();
     }
 
     /**
