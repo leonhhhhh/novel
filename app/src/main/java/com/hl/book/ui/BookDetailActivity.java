@@ -39,7 +39,6 @@ import io.reactivex.schedulers.Schedulers;
 // TODO: 2021/4/22 换源:更新Book表(进度信息重置),插入新的章节记录
     // TODO: 2021/4/22  换源后进度是否可以智能匹配探索
 // TODO: 2021/3/17 增加小说详情介绍头部
-// TODO: 2020/7/14 章节下载
 public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;

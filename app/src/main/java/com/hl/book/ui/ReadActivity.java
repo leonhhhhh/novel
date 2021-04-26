@@ -38,7 +38,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 2021/2/15 下载小说
 public class ReadActivity extends AppCompatActivity implements ReadClickListener {
     private static final String TAG = "ReadActivity";
     private ReadAdapter adapter;
