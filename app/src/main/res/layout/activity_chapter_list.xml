@@ -7,41 +7,50 @@
     tools:context=".ui.BookDetailActivity">
     <RelativeLayout android:id="@+id/rlyHeader"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:padding="16dp" android:background="@android:color/white"
+        android:paddingTop="16dp" android:background="@android:color/white"
         >
         <ImageView android:id="@+id/ivCover"
             android:layout_width="44dp" android:scaleType="centerCrop"
             android:layout_height="59dp" android:layout_marginEnd="10dp"
-            android:contentDescription="@string/cover" />
+            android:contentDescription="@string/cover" android:layout_marginStart="16dp"/>
+        <LinearLayout android:id="@+id/llyDetailHeader"
+            android:layout_toEndOf="@+id/ivCover" android:orientation="vertical"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="59dp" android:layout_marginEnd="16dp">
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="万千之心"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/tvAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="作者"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="最新章节:" android:layout_marginTop="5dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/tvName"
+            android:id="@+id/tvDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="万千之心" android:layout_toEndOf="@+id/ivCover"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            />
-        <TextView
-            android:id="@+id/tvNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="最新章节:" android:maxLength="25"
-            android:layout_toEndOf="@+id/ivCover" android:ellipsize="end"
-            android:layout_alignBottom="@+id/ivCover"
-            />
-        <View android:id="@+id/viewPoint"
-            android:layout_width="8dp" android:layout_marginStart="3dp"
-            android:layout_height="8dp" android:layout_toEndOf="@+id/tvNew"
-            android:layout_alignTop="@+id/tvNew" android:layout_marginTop="5dp"
-            android:background="@drawable/circle_red" android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/ivMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tvName"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/svg_ic_more"
-            />
+            tools:text="简介简介简介简介简介简介简介简介简介"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginTop="5dp"
+            android:textSize="13sp" android:layout_below="@id/llyDetailHeader"/>
+        <View
+            android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/bbbbbb" android:layout_below="@+id/tvDesc"/>
     </RelativeLayout>
     <LinearLayout android:id="@+id/llySetting"
         android:layout_width="match_parent" android:orientation="horizontal"

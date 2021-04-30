@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.hl.book.BuildConfig;
 import com.hl.book.R;
 import com.hl.book.base.BaseActivity;
 import com.hl.book.listener.OnItemClickListener;
@@ -55,6 +56,14 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
         sourceManager = SourceManager.getInstance();
         currentSource = sourceManager.getDefaultSource();
         iniView();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (BuildConfig.DEBUG){
+            finish();
+        }
     }
 
     private void iniView() {
@@ -118,7 +127,7 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
     public void onItemClick(View view, int position) {
         BookBean bookBean = data.get(position);
         ActivitySkipUtil.skipAct(this, BookDetailActivity.class
-                , "bookBean", bookBean);
+                , "book", bookBean);
     }
 
     public void onSearchListener(View view) {

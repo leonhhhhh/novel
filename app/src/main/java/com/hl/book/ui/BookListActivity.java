@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.hl.book.BuildConfig;
 import com.hl.book.R;
 import com.hl.book.base.BaseActivity;
 import com.hl.book.localdata.AppSharedper;
@@ -80,6 +81,9 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
     @Override
     protected void onStop() {
         super.onStop();
+        if (BuildConfig.DEBUG){
+            finish();
+        }
     }
 
     private void loadData() {
