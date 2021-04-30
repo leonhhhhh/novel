@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -12,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.hl.book.R;
+import com.hl.book.base.BaseActivity;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.AppSharedperKeys;
 import com.hl.book.localdata.database.DBCenter;
@@ -43,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 // TODO: 2021/4/22 获取Book详情时 将书籍属性和章节列表都入库 在书籍详情页即可不用再请求了,除非搜索过去或者主动刷新
 
-public class BookListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class BookListActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 //    private static final String TAG = "BookListActivity";
     private ArrayList<BookBean> data;
     private BookListAdapter adapter;
@@ -67,7 +67,7 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new BookListAdapter(data, new OnItemClickListener(),new OnItemLongClickListener());
+        adapter = new BookListAdapter(data, new OnItemClickListener());
         recyclerView.setAdapter(adapter);
     }
 
@@ -76,6 +76,12 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
         super.onResume();
         loadData();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     private void loadData() {
         iniData();
         startGetData();
@@ -188,7 +194,6 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
                 if (chapterBean!=null){
                     ActivitySkipUtil.skipAct(BookListActivity.this,ReadActivity.class
                             ,"book", bookBean,"chapterBean",chapterBean);
-                    finish();
                     return;
                 }
             }
@@ -197,25 +202,5 @@ public class BookListActivity extends AppCompatActivity implements SwipeRefreshL
         }
     }
 
-    /**
-     *
-     * todo 长按与刷新控件冲突  待解决
-     */
-    class OnItemLongClickListener implements View.OnLongClickListener{
-        @Override
-        public boolean onLongClick(View v) {
-            int position = (int) v.getTag();
-            if (position<0 || position>=data.size()) {
-                return true;
-            }
-            BookBean bookBean = data.get(position);
-            bookBean.chick();
-            DBCenter.getInstance().updateBook(bookBean);
-            adapter.notifyDataSetChanged();
-            ActivitySkipUtil.skipAct(BookListActivity.this, BookDetailActivity.class
-                    , "book", bookBean);
-            return true;
-        }
-    }
 
 }

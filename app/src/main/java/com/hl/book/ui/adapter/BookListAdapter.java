@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder>{
     private ArrayList<BookBean> chapterList;
     private View.OnClickListener onItemClickListener;
-    private View.OnLongClickListener onItemLongListener;
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
         TextView tvName;
@@ -37,11 +36,9 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
             viewPoint = v.findViewById(R.id.viewPoint);
         }
     }
-    public BookListAdapter(ArrayList<BookBean> chapterList, View.OnClickListener onItemClickListener,
-                           View.OnLongClickListener onItemLongListener) {
+    public BookListAdapter(ArrayList<BookBean> chapterList, View.OnClickListener onItemClickListener) {
         this.chapterList = chapterList;
         this.onItemClickListener = onItemClickListener;
-        this.onItemLongListener = onItemLongListener;
     }
 
     @NonNull
@@ -53,7 +50,6 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyView
         MyViewHolder holder = new MyViewHolder(v);
         holder.itemView.setTag(holder.getAdapterPosition());
         holder.itemView.setOnClickListener(onItemClickListener);
-        holder.itemView.setOnLongClickListener(onItemLongListener);
         return holder;
     }
 

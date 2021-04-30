@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
+import com.hl.book.base.BaseActivity;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
@@ -39,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 // TODO: 2021/4/22 换源:更新Book表(进度信息重置),插入新的章节记录
     // TODO: 2021/4/22  换源后进度是否可以智能匹配探索
 // TODO: 2021/3/17 增加小说详情介绍头部
-public class BookDetailActivity extends AppCompatActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class BookDetailActivity extends BaseActivity implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ChapterListAdapter adapter;
     private RecyclerView recyclerView;
     private TextView tvAdd;
@@ -153,7 +154,6 @@ public class BookDetailActivity extends AppCompatActivity implements OnItemClick
         ChapterBean chapterBean = data.get(position);
         ActivitySkipUtil.skipAct(this,ReadActivity.class
         ,"book", bookBean,"chapterBean",chapterBean);
-        finish();
     }
 
     public void onAddListener(View view) {

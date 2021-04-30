@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import com.hl.book.R;
+import com.hl.book.base.BaseActivity;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -16,7 +17,7 @@ import com.orhanobut.logger.Logger;
 // TODO: 2020/7/28 设置--关于我们 
 // TODO: 2020/7/28 设置--客服反馈 
 // TODO: 2020/7/28 设置--好评 
-public class MeActivity extends AppCompatActivity {
+public class MeActivity extends BaseActivity {
     private EditText etSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

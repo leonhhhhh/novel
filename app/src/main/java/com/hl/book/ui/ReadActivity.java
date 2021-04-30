@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hl.book.R;
+import com.hl.book.base.BaseActivity;
 import com.hl.book.listener.ReadClickListener;
 import com.hl.book.localdata.AppSharedper;
 import com.hl.book.localdata.database.DBCenter;
@@ -38,7 +39,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class ReadActivity extends AppCompatActivity implements ReadClickListener {
+public class ReadActivity extends BaseActivity implements ReadClickListener {
     private static final String TAG = "ReadActivity";
     private ReadAdapter adapter;
     private List<ChapterBean> data;

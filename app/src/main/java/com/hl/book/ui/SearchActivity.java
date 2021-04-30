@@ -3,7 +3,6 @@ package com.hl.book.ui;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -13,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hl.book.R;
+import com.hl.book.base.BaseActivity;
 import com.hl.book.listener.OnItemClickListener;
 import com.hl.book.listener.SourceSelectListener;
 import com.hl.book.localdata.database.DBCenter;
@@ -36,17 +36,16 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: 2021/4/22 换源功能:换源后刷新当前搜索结果为新源搜索第一页
-// TODO: 2021/2/15 分页功能
+// TODO: 2021/2/15 分页数据获取
 // TODO: 2021/4/22 加入移除状态添加
-// TODO: 2021/2/15 搜索历史
-public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
+public class SearchActivity extends BaseActivity implements OnItemClickListener {
 //    private static final String TAG = "SearchActivity";
     private ArrayList<BookBean> data;
     private SearchAdapter adapter;
     private EditText etSearch;
     private SourceManager sourceManager;
     private Source currentSource;
-
+    private boolean needClearData = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,13 +98,18 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
 
                 @Override
                 public void onSuccess(SearchResult o) {
+                    if (needClearData){
+                        data.clear();
+                        needClearData = false;
+                    }
                     data.addAll(o.data);
                     adapter.notifyDataSetChanged();
+                    hideLoadingDialog();
                 }
 
                 @Override
                 public void onError(Throwable e) {
-
+                    hideLoadingDialog();
                 }
             });
     }
@@ -122,6 +126,8 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
         if (search.equals("")){
             return;
         }
+        needClearData = true;
+        showLoading();
         startGetData(search);
     }
     public void onAddListener(View view) {

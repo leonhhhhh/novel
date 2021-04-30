@@ -57,7 +57,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
         ImageLoadUtil.loadImg(ImageOptionsFactory.getDefaultOption(holder.ivCover.getContext(),
                 searchBook.cover,holder.ivCover));
         holder.tvName.setText(searchBook.name);
-        holder.tvNew.setText(MessageFormat.format("最新:{0}", searchBook.newChapter));
+        holder.tvNew.setText(MessageFormat.format("最新章节:{0}", searchBook.newChapter));
         holder.tvDesc.setText(searchBook.desc);
         holder.tvAuthor.setText(MessageFormat.format("作者:{0}", searchBook.author));
         holder.tvAdd.setTag(position);
