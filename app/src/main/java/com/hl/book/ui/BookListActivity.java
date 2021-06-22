@@ -43,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
  * 小说列表 界面
  */
 // TODO: 2021/4/22 获取Book详情时 将书籍属性和章节列表都入库 在书籍详情页即可不用再请求了,除非搜索过去或者主动刷新
-
+// TODO: 2021/5/1 引入事件总线+获取小说信息封装成单例类 共享数据分发数据
 public class BookListActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 //    private static final String TAG = "BookListActivity";
     private ArrayList<BookBean> data;

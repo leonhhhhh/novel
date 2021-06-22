@@ -27,6 +27,7 @@ import com.hl.book.source.result.ContentResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ReadAdapter;
 import com.hl.book.ui.view.ReadClickView;
+import com.hl.book.util.StrUtil;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -213,7 +214,7 @@ public class ReadActivity extends BaseActivity implements ReadClickListener {
         }
         ChapterBean next = allChapterList.get(lastBean.index+1);
         TextBean textBean = DBCenter.getInstance().getChapterContentByUrl(next.url);
-        if (textBean == null){
+        if (textBean == null || StrUtil.isEmpty(textBean.content)){
             startGetContent(next);
         }else {
             next.textBean = textBean;

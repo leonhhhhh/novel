@@ -31,6 +31,10 @@ public class SourceBiQuGe extends Source {
         chapterUrl = Url.UrlBiQuGe.ChapterUrl;
     }
 
+    /**
+     * @param bookBean 小说
+     * @return 解析小说详情
+     */
     @Override
     public BookBean parseBook(BookBean bookBean) {
         Connection connect = Jsoup.connect(bookBean.url);

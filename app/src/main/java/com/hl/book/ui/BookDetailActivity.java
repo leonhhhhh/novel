@@ -83,7 +83,7 @@ public class BookDetailActivity extends BaseActivity implements OnItemClickListe
         if (data == null || data.size() == 0) {
             data = new ArrayList<>();
             startGetData();
-        }else if (bookBean.newChapter != null && bookBean.newChapter.equals(data.get(data.size()-1).title)){
+        }else if (!data.get(data.size()-1).title.equals(bookBean.newChapter)){
             startGetData();
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
