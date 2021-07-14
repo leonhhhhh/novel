@@ -62,7 +62,7 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
     protected void onStop() {
         super.onStop();
         if (BuildConfig.DEBUG){
-            finish();
+//            finish();
         }
     }
 

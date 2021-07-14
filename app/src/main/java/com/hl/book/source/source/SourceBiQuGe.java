@@ -1,7 +1,6 @@
 package com.hl.book.source.source;
 
 import com.hl.book.base.Config;
-import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.source.Url;

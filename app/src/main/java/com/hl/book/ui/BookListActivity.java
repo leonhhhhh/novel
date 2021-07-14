@@ -82,7 +82,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
     protected void onStop() {
         super.onStop();
         if (BuildConfig.DEBUG){
-            finish();
+//            finish();
         }
     }
 
