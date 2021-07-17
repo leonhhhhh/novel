@@ -66,7 +66,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void iniView() {
         data = new ArrayList<>();
-        iniData();
+
         swipeLayout = findViewById(R.id.swipeRefreshLayout);
         swipeLayout.setOnRefreshListener(this);
         recyclerView = findViewById(R.id.recyclerView);
@@ -74,7 +74,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
         recyclerView.setLayoutManager(layoutManager);
         adapter = new BookListAdapter(data, new OnItemClickListener());
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        loadData();
     }
 
     @Override
@@ -86,6 +86,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void loadData() {
+        iniData();
         startGetData();
         adapter.notifyDataSetChanged();
     }
@@ -96,6 +97,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         data.clear();
         data.addAll(DBCenter.getInstance().getBooks());
+        adapter.notifyDataSetChanged();
     }
 
     @Override

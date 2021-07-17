@@ -2,6 +2,7 @@ package com.hl.book.source;
 
 import com.hl.book.source.source.Source;
 import com.hl.book.source.source.SourceBiQuGe;
+import com.hl.book.source.source.SourceBiQuGe1;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,6 +25,7 @@ public class SourceManager {
 
     private SourceManager() {
         sourceList = new ArrayList<>();
+        sourceList.add(new SourceBiQuGe1());
         sourceList.add(new SourceBiQuGe());
     }
 
