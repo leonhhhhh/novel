@@ -31,10 +31,13 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -63,6 +66,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void iniView() {
         data = new ArrayList<>();
+        iniData();
         swipeLayout = findViewById(R.id.swipeRefreshLayout);
         swipeLayout.setOnRefreshListener(this);
         recyclerView = findViewById(R.id.recyclerView);
@@ -70,12 +74,7 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
         recyclerView.setLayoutManager(layoutManager);
         adapter = new BookListAdapter(data, new OnItemClickListener());
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadData();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -87,7 +86,6 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void loadData() {
-        iniData();
         startGetData();
         adapter.notifyDataSetChanged();
     }
@@ -116,40 +114,76 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
 
     @SuppressLint("CheckResult")
     private void startGetData() {
-        Observable.fromIterable(data)
-                .subscribeOn(Schedulers.io())
-                .map(new Function<BookBean, Object>() {
+        Disposable subscribe = Flowable.fromIterable(data)
+                .parallel()
+                .runOn(Schedulers.io())
+                .map(new Function<BookBean, BookBean>() {
                     @Override
-                    public Object apply(BookBean bookBean) {
+                    public BookBean apply(BookBean bookBean) {
+                        Logger.v("解析书籍:"+bookBean.name);
                         bookBean.hasAdd = true;
                         Source source = sourceManager.getSourceByLink(bookBean.url);
-                        Logger.v("获取书籍信息:"+bookBean.toString());
                         source.parseBook(bookBean);
                         return bookBean;
                     }
                 })
+                .sequential()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Object>() {
+                .subscribe(new Consumer<BookBean>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(Object value) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        DBCenter.getInstance().insertBooks(data);
+                    public void accept(BookBean bookBean) {
+                        Logger.v(bookBean.name + "解析完毕:");
                         adapter.notifyDataSetChanged();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Logger.v("全部更新完毕:");
+                        DBCenter.getInstance().insertBooks(data);
                         swipeLayout.setRefreshing(false);
                     }
                 });
+
+//
+//        Observable.fromIterable(data)
+//                .subscribeOn(Schedulers.io())
+//                .map(new Function<BookBean, Object>() {
+//                    @Override
+//                    public Object apply(BookBean bookBean) {
+//                        bookBean.hasAdd = true;
+//                        Source source = sourceManager.getSourceByLink(bookBean.url);
+//                        Logger.v("获取书籍信息:"+bookBean.toString());
+//                        source.parseBook(bookBean);
+//                        return bookBean;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Object>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                    }
+//
+//                    @Override
+//                    public void onNext(Object value) {
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        DBCenter.getInstance().insertBooks(data);
+//                        adapter.notifyDataSetChanged();
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
     }
 
     public void onItemSettingListener(View view) {
