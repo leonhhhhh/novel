@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.hl.book.R;
 import com.hl.book.listener.SourceSelectListener;
 import com.hl.book.source.SourceManager;
+import com.hl.book.source.result.ParseResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.ChapterListAdapter;
 import com.hl.book.util.StrUtil;
@@ -64,7 +65,7 @@ public class ListDialog extends BaseDialog {
     }
 
     class ListAdapter extends RecyclerView.Adapter<MyViewHolder>{
-        List<Source>  sourceList;
+        List<Source<ParseResult>>  sourceList;
         OnListClickListener onItemClick;
         public ListAdapter() {
             sourceList = SourceManager.getInstance().getSourceList();

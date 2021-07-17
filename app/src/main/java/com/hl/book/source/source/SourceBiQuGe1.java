@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SourceBiQuGe1 extends Source {
+public class SourceBiQuGe1 extends Source<ParseResult> {
 
     public SourceBiQuGe1() {
         name = "笔趣阁(BiQuYue)";
@@ -35,7 +35,10 @@ public class SourceBiQuGe1 extends Source {
      * @return 解析小说详情
      */
     @Override
-    public BookBean parseBook(BookBean bookBean) {
+    public BookDetailResult parseBook(BookBean bookBean) {
+        BookDetailResult result = new BookDetailResult();
+        result.bookBean = bookBean;
+        List<ChapterBean> data = new ArrayList<>();
         Connection connect = Jsoup.connect(bookBean.url);
         connect.header("User-Agent", Config.UserAgent);
         try {
@@ -53,10 +56,21 @@ public class SourceBiQuGe1 extends Source {
                     bookBean.lastChapter = links.get(0).text();
                 }
             }
+            Elements links = body.getElementById("list").getElementsByTag("a");
+            for (int i = data.size(); i < links.size(); i++) {
+                Element link = links.get(i);
+                ChapterBean chapterBean = new ChapterBean();
+                chapterBean.bookId = bookBean.url;
+                chapterBean.url = chapterUrl+link.attr("href");
+                chapterBean.title = link.text();
+                chapterBean.index = i;
+                data.add(chapterBean);
+            }
+            result.data = data;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return bookBean;
+        return result;
     }
 
     @Override

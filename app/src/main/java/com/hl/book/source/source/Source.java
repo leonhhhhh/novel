@@ -5,15 +5,15 @@ import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.source.download.DownloadPackage;
 import com.hl.book.source.result.ParseResult;
 
-public abstract class Source {
+public abstract class Source<T extends ParseResult> {
     public String name;
     public String searchUrl;
     public String bookUrl;
     public String chapterUrl;
 
-    public abstract BookBean parseBook(BookBean bookBean);
-    public abstract ParseResult parseBookDetail(String url);
-    public abstract ParseResult parseContent(ChapterBean chapterBean);
-    public abstract ParseResult parseContent(DownloadPackage downloadPackage);
-    public abstract ParseResult parseSearch(String searchTxt);
+    public abstract T parseBook(BookBean bookBean);
+    public abstract T parseBookDetail(String url);
+    public abstract T parseContent(ChapterBean chapterBean);
+    public abstract T parseContent(DownloadPackage downloadPackage);
+    public abstract T parseSearch(String searchTxt);
 }

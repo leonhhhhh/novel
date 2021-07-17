@@ -19,6 +19,8 @@ import com.hl.book.localdata.database.DBCenter;
 import com.hl.book.model.bean.BookBean;
 import com.hl.book.model.bean.ChapterBean;
 import com.hl.book.source.SourceManager;
+import com.hl.book.source.result.BookDetailResult;
+import com.hl.book.source.result.ParseResult;
 import com.hl.book.source.source.Source;
 import com.hl.book.ui.adapter.BookListAdapter;
 import com.hl.book.ui.dialog.BookListBottomDialog;
@@ -124,8 +126,11 @@ public class BookListActivity extends BaseActivity implements SwipeRefreshLayout
                     public BookBean apply(BookBean bookBean) {
                         Logger.v("解析书籍:"+bookBean.name);
                         bookBean.hasAdd = true;
-                        Source source = sourceManager.getSourceByLink(bookBean.url);
-                        source.parseBook(bookBean);
+                        Source<ParseResult> source = sourceManager.getSourceByLink(bookBean.url);
+                        BookDetailResult result = (BookDetailResult) source.parseBook(bookBean);
+                        if (result.data != null){
+                            DBCenter.getInstance().insertChapters(result.data);
+                        }
                         return bookBean;
                     }
                 })
